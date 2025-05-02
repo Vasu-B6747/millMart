@@ -19,6 +19,10 @@ app.post('/login',userCtrl.login)
 app.get('/profile',authenticateUser,userCtrl.profile)
 app.get('/users',authenticateUser,authorisedUser(['admin']),userCtrl.list)
 app.put('/user/:id',authenticateUser,userCtrl.update)
+app.post('/forgotpassword',userCtrl.forgotPassword)
+app.post('/resetpassword/:token',userCtrl.resetPassword)
+app.put('/active/:id',authenticateUser,authorisedUser(['admin']),userCtrl.activate)
+app.put('/verify/:id',authenticateUser,authorisedUser(['admin']),userCtrl.isVerify)
 
 app.listen(port,()=>{
     console.log('sever is running on port ',port)
