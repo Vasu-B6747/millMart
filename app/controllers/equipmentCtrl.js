@@ -1,11 +1,12 @@
 import Equipment from "../models/EquipmentModel.js"
+import paginateQuery from '../Utils/paginate.js'
 //
 const equipmentCtrl={}
 //create
 equipmentCtrl.create=async(req,res)=>{
-    const {seller,title,description,equimentType,brand,model,yearManufactured,condition,price,location,photos}=req.body
+    const {seller,title,description,equipmentType,brand,model,yearManufactured,condition,price,location,photos}=req.body
     try{
-        const equipment= new Equipment({seller,title,description,equimentType,brand,model,yearManufactured,condition,price,location,photos})
+        const equipment= new Equipment({seller,title,description,equipmentType,brand,model,yearManufactured,condition,price,location,photos})
         equipment.seller=req.userId
         await equipment.save()
         res.status(201).json(equipment)
@@ -14,17 +15,34 @@ equipmentCtrl.create=async(req,res)=>{
         res.status(500).json({error:'Something went wrong'})
     }
 }
-//list 
-equipmentCtrl.list=async(req,res)=>{
-    try{
-        const equipments=await Equipment.find()
-        res.json(equipments)
-    }catch(err){
-        console.log(err)
-        res.status(500).json({error:'Something went wrong'})
+//list
+
+
+equipmentCtrl.list = async (req, res) => {
+    try {
+        const result = await paginateQuery(Equipment, {}, {
+            page: req.query.page,
+            limit: req.query.limit,
+            sort: { createdAt: -1 }
+        });
+
+        res.json(result);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Something went wrong' });
     }
+};
+
+// equipmentCtrl.list=async(req,res)=>{
+//     try{
+//         const equipments=await Equipment.find()
+//         res.json(equipments)
+//     }catch(err){
+//         console.log(err)
+//         res.status(500).json({error:'Something went wrong'})
+//     }
     
-}
+// }
 
 //remove
 equipmentCtrl.remove=async(req,res)=>{
@@ -41,7 +59,8 @@ equipmentCtrl.remove=async(req,res)=>{
             }
             res.json(equipment)
         }else{
-            res.json({message:'You cannot delete this Product/Unauthorized access'})
+            return res.status(403).json({ error: 'Unauthorized: You do not have permission to perform this action' });
+
         }
 
     }catch(err){
@@ -53,20 +72,21 @@ equipmentCtrl.remove=async(req,res)=>{
 //update
 equipmentCtrl.update=async(req,res)=>{
     const id=req.params.id
-    const body=req.body
+    const {seller,title,description,equipmentType,brand,model,yearManufactured,condition,price,location,photos}=req.body
     try{
         const Existequipment=await Equipment.findById(id)
         if(!Existequipment){
             return res.status(404).json({error:'Equipment not found'})
         }
         if(Existequipment.seller==req.userId || req.role=='admin'){
-            const equipment=await Equipment.findByIdAndDelete(id)
+            const equipment=await Equipment.findByIdAndUpdate(id, {seller:req.userId,title,description,equipmentType,brand,model,yearManufactured,condition,price,location,photos},{new:true})
             if(!equipment){
                 return res.status(404).json({error:'Equipment not found'}) 
             }
             res.json(equipment)
         }else{
-            res.json({message:'You cannot delete this Product/Unauthorized access'})
+            return res.status(403).json({ error: 'Unauthorized: You do not have permission to perform this action' });
+
         }
 
     }catch(err){
@@ -74,4 +94,170 @@ equipmentCtrl.update=async(req,res)=>{
         res.status(500).json({error:'Something went wrong'})
     }
 }
+
+//ShowEquipment
+equipmentCtrl.show=async(req,res)=>{
+    const id=req.params.id
+    try{
+        const equipment=await Equipment.findById(id)
+        if(!equipment){
+            return res.status(404).json({error:'Equipment not found'})
+        }
+        equipment.views = (equipment.views || 0) + 1;
+        await equipment.save();
+        res.json(equipment)
+    }catch(err){
+        console.log(err)
+        res.status(500).json({error:'Something went wrong'})
+    }
+}
+
+//Equipments of related sellers
+equipmentCtrl.getBySeller=async(req,res)=>{
+    const userId=req.userId
+    try{
+        const equipments=await Equipment.find({seller:userId})
+        res.json(equipments)
+    }catch(err){
+        console.log(err)
+        res.status(500).json({error:'Something went wrong'})
+    }
+}
+//search or filter 
+equipmentCtrl.search = async (req, res) => {
+    const { type, condition, minPrice, maxPrice } = req.query;
+
+    let query = {};
+    if (type) query.equipmentType = type;
+    if (condition) query.condition = condition;
+    if (minPrice || maxPrice) {
+        query.price = {};
+        if (minPrice) query.price.$gte = Number(minPrice);
+        if (maxPrice) query.price.$lte = Number(maxPrice);
+    }
+
+    try {
+        const result = await paginateQuery(Equipment, query, {
+            page: req.query.page,
+            limit: req.query.limit,
+            sort: { createdAt: -1 }
+        });
+
+        res.json(result);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+};
+
+// equipmentCtrl.search = async (req, res) => {
+//     const { type, condition, minPrice, maxPrice } = req.query;
+//     let query = {};
+//     if (type) query.equipmentType = type;
+//     if (condition) query.condition = condition;
+//     if (minPrice || maxPrice) {
+//         query.price = {};
+//         if (minPrice) query.price.$gte = Number(minPrice);
+//         if (maxPrice) query.price.$lte = Number(maxPrice);
+//     }
+
+//     try {
+//         const equipments = await Equipment.find(query);
+//         res.json(equipments);
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).json({ error: 'Something went wrong' });
+//     }
+// };
+//approval
+equipmentCtrl.approve = async (req, res) => {
+    const id=req.params.id
+    const {isApproved}=req.body
+    try {
+        if (req.role !== 'admin'){
+             return res.status(403).json({ error: 'Admin only' });
+        }
+
+        const equipment = await Equipment.findByIdAndUpdate(id, { isApproved}, { new: true });
+        if (!equipment) return res.status(404).json({ error: 'Equipment not found' });
+
+        res.json(equipment);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+}
+
+//verifyEquipment
+equipmentCtrl.verify = async (req, res) => {
+    const id=req.params.id
+    const {isVerified}=req.body
+    try {
+        if (req.role !== 'admin') return res.status(403).json({ error: 'Admin only' });
+
+        const equipment = await Equipment.findByIdAndUpdate(id, {isVerified}, { new: true });
+        if (!equipment) return res.status(404).json({ error: 'Equipment not found' });
+        // if (isVerified) {
+        //     const emailHTML = `
+        //         <h2>Your equipment listing has been verified ✅</h2>
+        //         <p><strong>Title:</strong> ${equipment.title}</p>
+        //         <p>Thank you for using AgriMarket!</p>
+        //     `;
+
+        //     await sendMail(
+        //         equipment.seller.email,
+        //         'Your Equipment is Verified!',
+        //         emailHTML
+        //     );
+        // }
+
+        res.json({ message: 'Equipment approved', equipment });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+}
+
+//nearby
+equipmentCtrl.getNearby = async (req, res) => {
+    const { lng, lat, distance } = req.query;
+    try {
+        const equipments = await Equipment.find({
+            'location.coordinates': {
+                $near: {
+                    $geometry: { type: 'Point', coordinates: [parseFloat(lng), parseFloat(lat)] },
+                    $maxDistance: parseFloat(distance)
+                }
+            }
+        });
+        res.json(equipments);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+}
+
+//isSold
+equipmentCtrl.markAsSold = async (req, res) => {
+    const id=req.params.id
+    try {
+        const equipment = await Equipment.findById(id);
+        if (!equipment) return res.status(404).json({ error: 'Equipment not found' });
+
+        if (equipment.seller == req.userId || req.role === 'admin') {
+            equipment.isSold = true;
+            await equipment.save();
+            // res.json({ message: 'Marked as sold' });
+            res.json(equipment);
+        } else {
+            res.status(403).json({ error: 'Unauthorized' });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+};
+
+
+
 export default equipmentCtrl
