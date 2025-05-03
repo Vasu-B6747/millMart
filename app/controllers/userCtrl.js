@@ -3,8 +3,13 @@ import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
 import sendEmail from '../Utils/resetEmail.js'
+import { validationResult } from 'express-validator'
 const userCtrl={}
 userCtrl.register=async(req,res)=>{
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){
+        return res.status(400).json({error:errors.array()})
+    }
     const body=req.body
     try{
         const user=new User(body)
@@ -17,6 +22,12 @@ userCtrl.register=async(req,res)=>{
         }
         if(user.role=='buyer'){
             user.isActive=true
+        }
+        if(count>0 && user.role=='admin'){
+            return res.status(400).json({error:'admin is already exists'})
+        }
+        if (count > 0 && !user.role) {
+            return res.status(400).json({ error: 'Role is required for new users' });
         }
         const salt=await bcryptjs.genSalt()
         const hash=await bcryptjs.hash(body.password,salt)
@@ -32,6 +43,10 @@ userCtrl.register=async(req,res)=>{
 
 //Login
 userCtrl.login=async(req,res)=>{
+     const errors=validationResult(req)
+        if(!errors.isEmpty()){
+            return res.status(400).json({error:errors.array()})
+        }
     const {email,password}=req.body
     // console.log(email)
     try{
@@ -56,6 +71,11 @@ userCtrl.login=async(req,res)=>{
 
 //profile
 userCtrl.profile=async(req,res)=>{
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){
+        return res.status(400).json({error:errors.array()})
+    }
+    
     try{
         const user=await User.findById(req.userId)
         res.json(user)
@@ -79,6 +99,10 @@ userCtrl.list=async(req,res)=>{
 
 //removeUser
 userCtrl.remove=async(req,res)=>{
+     const errors=validationResult(req)
+        if(!errors.isEmpty()){
+            return res.status(400).json({error:errors.array()})
+        }
     const id=req.params.id
     try{
         const account=await User.findById(id)
@@ -102,6 +126,10 @@ userCtrl.remove=async(req,res)=>{
 
 //updateUser
 userCtrl.update=async(req,res)=>{
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){
+        return res.status(400).json({error:errors.array()})
+    }
     const id=req.params.id
     let {name,profilePic,address,email,password}=req.body
     try{
@@ -126,6 +154,10 @@ userCtrl.update=async(req,res)=>{
 
 //forgotPassword
 userCtrl.forgotPassword=async(req,res)=>{
+     const errors=validationResult(req)
+        if(!errors.isEmpty()){
+            return res.status(400).json({error:errors.array()})
+        }
     const {email}=req.body
     try{
     const user=await User.findOne({email})
@@ -150,6 +182,10 @@ userCtrl.forgotPassword=async(req,res)=>{
 
 //ResetPassword
 userCtrl.resetPassword = async (req, res) => {
+     const errors=validationResult(req)
+        if(!errors.isEmpty()){
+            return res.status(400).json({error:errors.array()})
+        }
     const { token } = req.params
     const { password,confirmPassword } = req.body
 
@@ -186,6 +222,10 @@ userCtrl.resetPassword = async (req, res) => {
 }
 //Active to users
 userCtrl.activate=async(req,res)=>{
+     const errors=validationResult(req)
+        if(!errors.isEmpty()){
+            return res.status(400).json({error:errors.array()})
+        }
     const id=req.params.id
     const {isActive}=req.body
     try{
@@ -204,6 +244,10 @@ userCtrl.activate=async(req,res)=>{
 
 //Verify users
 userCtrl.isVerify=async(req,res)=>{
+     const errors=validationResult(req)
+        if(!errors.isEmpty()){
+            return res.status(400).json({error:errors.array()})
+        }
     const id=req.params.id
     const {isVerify}=req.body
     try{
