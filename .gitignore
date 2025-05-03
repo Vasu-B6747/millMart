@@ -1,0 +1,11 @@
+# Environment
+.env
+
+# Node
+node_modules/
+
+# Logs
+*.log
+
+# Optional: upload folders
+uploads/
