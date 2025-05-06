@@ -1,9 +1,14 @@
 import Equipment from "../models/EquipmentModel.js"
 import paginateQuery from '../Utils/paginate.js'
+import {validationResult} from 'express-validator'
 //
 const equipmentCtrl={}
-//create
+//1.create
 equipmentCtrl.create=async(req,res)=>{
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){
+        return res.status(400).json({error:errors.array()})
+    }
     const {seller,title,description,equipmentType,brand,model,yearManufactured,condition,price,location,photos}=req.body
     try{
         const equipment= new Equipment({seller,title,description,equipmentType,brand,model,yearManufactured,condition,price,location,photos})
@@ -15,7 +20,7 @@ equipmentCtrl.create=async(req,res)=>{
         res.status(500).json({error:'Something went wrong'})
     }
 }
-//list
+//2.list
 
 
 equipmentCtrl.list = async (req, res) => {
@@ -44,8 +49,12 @@ equipmentCtrl.list = async (req, res) => {
     
 // }
 
-//remove
+//3.remove
 equipmentCtrl.remove=async(req,res)=>{
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){
+      return res.status(400).json({error:errors.array()})
+    }
     const id=req.params.id
     try{
         const Existequipment=await Equipment.findById(id)
@@ -69,8 +78,12 @@ equipmentCtrl.remove=async(req,res)=>{
     }
 }
 
-//update
+//4.update
 equipmentCtrl.update=async(req,res)=>{
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){
+      return res.status(400).json({error:errors.array()})
+    }
     const id=req.params.id
     const {seller,title,description,equipmentType,brand,model,yearManufactured,condition,price,location,photos}=req.body
     try{
@@ -95,8 +108,12 @@ equipmentCtrl.update=async(req,res)=>{
     }
 }
 
-//ShowEquipment
+//5.ShowEquipment
 equipmentCtrl.show=async(req,res)=>{
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){
+      return res.status(400).json({error:errors.array()})
+    }
     const id=req.params.id
     try{
         const equipment=await Equipment.findById(id)
@@ -112,8 +129,12 @@ equipmentCtrl.show=async(req,res)=>{
     }
 }
 
-//Equipments of related sellers
+//6.Equipments of related sellers
 equipmentCtrl.getBySeller=async(req,res)=>{
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){
+      return res.status(400).json({error:errors.array()})
+    }
     const userId=req.userId
     try{
         const equipments=await Equipment.find({seller:userId})
@@ -123,7 +144,7 @@ equipmentCtrl.getBySeller=async(req,res)=>{
         res.status(500).json({error:'Something went wrong'})
     }
 }
-//search or filter 
+//7.search or filter 
 equipmentCtrl.search = async (req, res) => {
     const { type, condition, minPrice, maxPrice } = req.query;
 
@@ -169,8 +190,12 @@ equipmentCtrl.search = async (req, res) => {
 //         res.status(500).json({ error: 'Something went wrong' });
 //     }
 // };
-//approval
+//8.approval
 equipmentCtrl.approve = async (req, res) => {
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){
+      return res.status(400).json({error:errors.array()})
+    }
     const id=req.params.id
     const {isApproved}=req.body
     try {
@@ -188,8 +213,12 @@ equipmentCtrl.approve = async (req, res) => {
     }
 }
 
-//verifyEquipment
+//9.verifyEquipment
 equipmentCtrl.verify = async (req, res) => {
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){
+      return res.status(400).json({error:errors.array()})
+    }
     const id=req.params.id
     const {isVerified}=req.body
     try {
@@ -218,7 +247,7 @@ equipmentCtrl.verify = async (req, res) => {
     }
 }
 
-//nearby
+//10.nearby
 equipmentCtrl.getNearby = async (req, res) => {
     const { lng, lat, distance } = req.query;
     try {
@@ -237,8 +266,12 @@ equipmentCtrl.getNearby = async (req, res) => {
     }
 }
 
-//isSold
+//11.isSold
 equipmentCtrl.markAsSold = async (req, res) => {
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){
+      return res.status(400).json({error:errors.array()})
+    }
     const id=req.params.id
     try {
         const equipment = await Equipment.findById(id);
@@ -250,7 +283,7 @@ equipmentCtrl.markAsSold = async (req, res) => {
             // res.json({ message: 'Marked as sold' });
             res.json(equipment);
         } else {
-            res.status(403).json({ error: 'Unauthorized' });
+           return res.status(403).json({ error: 'Unauthorized' });
         }
     } catch (err) {
         console.log(err);

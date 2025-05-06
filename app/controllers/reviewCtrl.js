@@ -1,6 +1,12 @@
 import Review from '../models/reviewModel.js'
+import { validationResult } from 'express-validator';
 const reviewCtrl={}
+//1.create
 reviewCtrl.createReview = async (req, res) => {
+  const errors=validationResult(req)
+  if(!errors.isEmpty()){
+    return res.status(400).json({error:errors.array()})
+  }
     const { buyer, seller, equipmentId, rating, reviewText } = req.body;
   
     try {
@@ -27,6 +33,10 @@ reviewCtrl.createReview = async (req, res) => {
   
   // 2. Get All Reviews for a Seller
   reviewCtrl.getSellerReviews = async (req, res) => {
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){
+      return res.status(400).json({error:errors.array()})
+    }
     const sellerId = req.params.id;
   
     try {
@@ -43,6 +53,10 @@ reviewCtrl.createReview = async (req, res) => {
   
   // 3. Get All Reviews for a Specific Equipment
   reviewCtrl.getEquipmentReviews = async (req, res) => {
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){
+      return res.status(400).json({error:errors.array()})
+    }
     const equipmentId = req.params.id;
   
     try {
@@ -59,6 +73,10 @@ reviewCtrl.createReview = async (req, res) => {
   
   // 4. Delete a Review
   reviewCtrl.deleteReview = async (req, res) => {
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){
+      return res.status(400).json({error:errors.array()})
+    }
     const reviewId = req.params.id;
   
     try {
@@ -83,6 +101,10 @@ reviewCtrl.createReview = async (req, res) => {
 
   // 5. Get All Reviews by a Buyer
 reviewCtrl.getBuyerReviews = async (req, res) => {
+  const errors=validationResult(req)
+  if(!errors.isEmpty()){
+    return res.status(400).json({error:errors.array()})
+  }
     const buyerId = req.params.id;
   
     try {
@@ -99,6 +121,10 @@ reviewCtrl.getBuyerReviews = async (req, res) => {
 
   // 6. Update a Review
   reviewCtrl.updateReview = async (req, res) => {
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){
+      return res.status(400).json({error:errors.array()})
+    }
     const reviewId = req.params.id;
     const { rating, reviewText } = req.body;
   

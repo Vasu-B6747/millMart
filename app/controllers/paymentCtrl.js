@@ -1,11 +1,16 @@
 import Payment from '../models/paymentModel.js';
 import razorpay from '../Utils/razorpay.js'
 import crypto from 'crypto';
+import { validationResult } from 'express-validator';
 
 const paymentCtrl = {};
 
 // 1. Create a Payment
 paymentCtrl.createPayment = async (req, res) => {
+const errors=validationResult(req)
+if(!errors.isEmpty()){
+  return res.status(400).json({error:errors.array()})
+}
   try {
     const { buyer, seller, equipmentId, amount, paymentMethod } = req.body;
 
@@ -29,10 +34,17 @@ paymentCtrl.createPayment = async (req, res) => {
 
 // 2. Mark Payment as Completed
 paymentCtrl.completePayment = async (req, res) => {
+  const errors=validationResult(req)
+if(!errors.isEmpty()){
+  return res.status(400).json({error:errors.array()})
+}
   try {
     const payment = await Payment.findById(req.params.id);
     if (!payment){
         return res.status(404).json({ error: 'Payment not found' });
+    }
+    if (payment.seller.toString() !== req.userId && req.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized to complete this payment' });
     }
     payment.paymentStatus = 'completed';
     await payment.save();
@@ -46,6 +58,10 @@ paymentCtrl.completePayment = async (req, res) => {
 
 // 3. Refund Payment
 paymentCtrl.refundPayment = async (req, res) => {
+  const errors=validationResult(req)
+if(!errors.isEmpty()){
+  return res.status(400).json({error:errors.array()})
+}
   try {
     const payment = await Payment.findById(req.params.id);
     if (!payment){
@@ -54,7 +70,10 @@ paymentCtrl.refundPayment = async (req, res) => {
     if (payment.paymentStatus !== 'completed') {
       return res.status(400).json({ error: 'Only completed payments can be refunded' });
     }
-
+    if (payment.seller.toString() !== req.userId && req.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized to refund this payment' });
+    }
+    
     payment.paymentStatus = 'refunded';
     await payment.save();
 
@@ -82,6 +101,10 @@ paymentCtrl.getAllPayments = async (req, res) => {
 
 // 5. Get Payment by ID
 paymentCtrl.getPaymentById = async (req, res) => {
+  const errors=validationResult(req)
+if(!errors.isEmpty()){
+  return res.status(400).json({error:errors.array()})
+}
   try {
     const payment = await Payment.findById(req.params.id)
       .populate('buyer', 'name email')
@@ -114,6 +137,7 @@ paymentCtrl.getPaymentsByBuyer = async (req, res) => {
 
 // 7. Get Payments by Seller
 paymentCtrl.getPaymentsBySeller = async (req, res) => {
+
   try {
     const payments = await Payment.find({ seller: req.userId })
       .populate('buyer', 'name')
@@ -128,6 +152,10 @@ paymentCtrl.getPaymentsBySeller = async (req, res) => {
 
 // 8. Delete a Payment (Admin)
 paymentCtrl.deletePayment = async (req, res) => {
+  const errors=validationResult(req)
+if(!errors.isEmpty()){
+  return res.status(400).json({error:errors.array()})
+}
   try {
     const payment = await Payment.findById(req.params.id);
     if (!payment){
