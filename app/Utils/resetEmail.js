@@ -15,9 +15,10 @@ const sendEmail=async(user)=>{
     const mailOptions={
         from:process.env.EMAIL_USER,
         to:user.email,
-        subject:'Reset your Password',
+        subject:user.subject,
         // text:`Hi ${user.name}\n Your Account ${user.message} Successfully your login credentials are \nemail:${user.email}\npassword:${user.password}`
-        text:user.message
+        text:user.message,
+        html:user.html || null
        
     }
  

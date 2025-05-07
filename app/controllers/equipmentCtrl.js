@@ -1,5 +1,6 @@
 import Equipment from "../models/EquipmentModel.js"
 import paginateQuery from '../Utils/paginate.js'
+import cloudinary from '../Utils/cloudinary.js'
 import {validationResult} from 'express-validator'
 //
 const equipmentCtrl={}
@@ -20,7 +21,56 @@ equipmentCtrl.create=async(req,res)=>{
         res.status(500).json({error:'Something went wrong'})
     }
 }
-//2.list
+
+
+// equipmentCtrl.create = async (req, res) => {
+//   const errors = validationResult(req);
+//   if (!errors.isEmpty()) {
+//     return res.status(400).json({ error: errors.array() });
+//   }
+
+//   const {
+//     title, description, equipmentType, brand, model,
+//     yearManufactured, condition, price, locationName, lat, lng
+//   } = req.body;
+
+//   try {
+//     // Upload photos
+//     const uploadResults = await Promise.all(
+//       req.files.map(file =>
+//         cloudinary.uploader.upload_stream({ folder: 'equipment' }, (error, result) => {
+//           if (error) throw error;
+//           return result.secure_url;
+//         })(file.buffer)
+//       )
+//     );
+
+//     const equipment = new Equipment({
+//       seller: req.userId,
+//       title,
+//       description,
+//       equipmentType,
+//       brand,
+//       model,
+//       yearManufactured,
+//       condition,
+//       price,
+//       location: {
+//         name: locationName,
+//         coordinates: [parseFloat(lng), parseFloat(lat)]
+//       },
+//       photos: uploadResults
+//     });
+
+//     await equipment.save();
+//     res.status(201).json(equipment);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ error: 'Something went wrong' });
+//   }
+// };
+
+// //2.list
 
 
 equipmentCtrl.list = async (req, res) => {
@@ -224,22 +274,28 @@ equipmentCtrl.verify = async (req, res) => {
     try {
         if (req.role !== 'admin') return res.status(403).json({ error: 'Admin only' });
 
-        const equipment = await Equipment.findByIdAndUpdate(id, {isVerified}, { new: true });
+        const equipment = await Equipment.findByIdAndUpdate(id, {isVerified}, { new: true }).populate('seller', 'email')
         if (!equipment) return res.status(404).json({ error: 'Equipment not found' });
-        // if (isVerified) {
-        //     const emailHTML = `
-        //         <h2>Your equipment listing has been verified ✅</h2>
-        //         <p><strong>Title:</strong> ${equipment.title}</p>
-        //         <p>Thank you for using AgriMarket!</p>
-        //     `;
-
-        //     await sendMail(
-        //         equipment.seller.email,
-        //         'Your Equipment is Verified!',
-        //         emailHTML
-        //     );
-        // }
-
+        if (req.body.isVerified) {
+            const subject = 'Your Equipment is Verified!';
+            const textMessage = `Your equipment listing has been verified.\n\nTitle: ${equipment.title}\n\nThank you for using AgriMarket!`;
+          
+            const emailHTML = `
+              <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+                <h2 style="color: #2e7d32;">✅ Your Equipment Listing Has Been Verified</h2>
+                <p><strong>Title:</strong> ${equipment.title}</p>
+                <p>Thank you for using <strong>AgriMarket</strong>!</p>
+              </div>
+            `;
+          
+            await sendMail({
+              email: equipment.seller.email,
+              subject,
+              message: textMessage,
+              html: emailHTML
+            });
+          }
+          
         res.json({ message: 'Equipment approved', equipment });
     } catch (err) {
         console.log(err);

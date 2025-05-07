@@ -5,6 +5,7 @@ import { checkSchema } from 'express-validator'
 import configureDB  from './config/configureDb.js' 
 import { authenticateUser } from './app/middlewares/authenticateUser.js'
 import { authorisedUser } from './app/middlewares/authorisedUser.js'
+import upload from './app/middlewares/uploads.js'
 //Ctrls
 import userCtrl from './app/controllers/userCtrl.js'
 import equipmentCtrl from './app/controllers/equipmentCtrl.js'
@@ -40,6 +41,7 @@ app.put('/active/:id',authenticateUser,authorisedUser(['admin']),checkSchema(idV
 app.put('/verify/:id',authenticateUser,authorisedUser(['admin']),checkSchema(idValidationSchema),userCtrl.isVerify)
 
 //equipment
+// app.post('/equipment',authenticateUser,upload.array('photos', 5), checkSchema(equipmentValidationSchema),equipmentCtrl.create)
 app.post('/equipment',authenticateUser,authorisedUser(['seller']),checkSchema(equipmentValidationSchema),equipmentCtrl.create)
 app.get('/equipments',equipmentCtrl.list)
 app.delete('/equipment/:id',authenticateUser,checkSchema(idValidationSchema),equipmentCtrl.remove)
@@ -61,7 +63,7 @@ app.patch('/message/:id',authenticateUser,checkSchema(idValidationSchema),messag
 
 //reviews
 app.post('/review',authenticateUser,checkSchema(createReviewValidation),reviewCtrl.createReview)
-app.get('/review/buyer/:id',authenticateUser(idValidationSchema),reviewCtrl.getBuyerReviews)
+app.get('/review/buyer/:id',authenticateUser,checkSchema(idValidationSchema),reviewCtrl.getBuyerReviews)
 app.get('/review/seller/:id',authenticateUser,checkSchema(idValidationSchema),reviewCtrl.getSellerReviews)
 app.get('/review/equip/:id',authenticateUser,checkSchema(idValidationSchema),reviewCtrl.getEquipmentReviews)
 app.put('/review/:id',authenticateUser,checkSchema(idValidationSchema),checkSchema(updateReviewValidation),reviewCtrl.updateReview)
@@ -70,10 +72,9 @@ app.delete('/review/:id',authorisedUser,checkSchema(idValidationSchema),reviewCt
 //payment
 app.post('/payment',authenticateUser,checkSchema(createPaymentValidation),paymentCtrl.createPayment)
 app.get('/payments',authenticateUser,authorisedUser(['admin']),paymentCtrl.getAllPayments)
-app.delete('/payment/:id',authenticateUser,paymentCtrl.deletePayment)
+app.delete('/payment/:id',authenticateUser,authorisedUser(['admin']),checkSchema(idValidationSchema),paymentCtrl.deletePayment)
 app.get('/payment/:id',authenticateUser,checkSchema(idValidationSchema),paymentCtrl.getPaymentById)
-app.get('/payment/seller/:id',authenticateUser,checkSchema(idValidationSchema),paymentCtrl.getPaymentsBySeller)
-app.get('/payment/buyer/:id',authenticateUser,checkSchema(idValidationSchema),paymentCtrl.getPaymentsByBuyer)
+app.get('/payment/user',authenticateUser,paymentCtrl.getUserPayments)
 app.post('/payment/razor',authenticateUser,paymentCtrl.createRazorpayOrder)
 app.post('/payments/verify-razorpay',authenticateUser,paymentCtrl.verifyRazorpayPayment)
 app.patch('/payment/complete/:id',authenticateUser,checkSchema(idValidationSchema),paymentCtrl.completePayment)

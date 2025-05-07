@@ -58,6 +58,9 @@ userCtrl.login=async(req,res)=>{
         if(!isVerified){
             return res.status(404).json({error:'Invalid email/password'})
         }
+        if(!user.isActive){
+            return res.status(400).json({error:'you cannot login please contact admin by using abc@gmail.com'})
+        }
         const tokenData={userId:user._id,role:user.role}
         const token=jwt.sign(tokenData,process.env.SECRET,{expiresIn:'7d'})
         res.json(token)
@@ -169,9 +172,20 @@ userCtrl.forgotPassword=async(req,res)=>{
     user.resetPasswordExpires=Date.now()+600000
     await user.save()
     const resetLink=`${process.env.FRONTEND_URL}/resetpassword/${token}`
-    const message=`We have received reset password request.Please use the below the link to reset your password \n\n${resetLink} \n\n.This reset password link valid upto 10 minutes`
+    const subject = 'Reset Your Password';
+const textMessage = `We have received a reset password request. Please use the link below to reset your password:\n\n${resetLink}\n\nThis link is valid for 10 minutes.`;
+const html = `
+  <p>We received a request to reset your password.</p>
+  <p>
+    <a href="${resetLink}" style="color: blue; text-decoration: underline;">
+      Click here to reset your password
+    </a>
+  </p>
+  <p>This link will expire in 10 minutes.</p>
+`;
+    // const message=`We have received reset password request.Please use the below the link to reset your password \n\n${resetLink} \n\n.This reset password link valid upto 10 minutes`
     console.log(user.email)
-    sendEmail({email:user.email,message:message})
+    sendEmail({email:user.email,message:message,subject,html})
     res.json({ message: 'Password reset link sent to email', resetLink })
     }catch(err){
         console.log(err)
@@ -210,10 +224,20 @@ userCtrl.resetPassword = async (req, res) => {
         user.resetPasswordExpires = undefined
 
         await user.save()
-        await sendEmail({
+        // await sendEmail({
+        //     email: user.email,
+        //     message: 'Your password was successfully reset. If you didn’t do this, contact support immediately.'
+        //   });
+          await sendEmail({
             email: user.email,
-            message: 'Your password was successfully reset. If you didn’t do this, contact support immediately.'
+            subject: 'Password Successfully Reset',
+            message: 'Your password was successfully reset. If you didn’t do this, contact support immediately.',
+            html: `
+              <p>Your password was <strong>successfully reset</strong>.</p>
+              <p>If you didn’t do this, please <a href="mailto:support@example.com">contact support</a> immediately.</p>
+            `
           });
+          
         res.json({ message: 'Password reset successful' })
     } catch (err) {
         console.log(err)
@@ -234,6 +258,22 @@ userCtrl.activate=async(req,res)=>{
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
+            if(req.body.isActive){
+                await sendEmail({
+                    email: user.email,
+                    subject: 'Account Activated',
+                    message: 'Your account has been activated.',
+                    html: '<p>Your account has been <strong>activated</strong>.</p>'
+                  });
+            }else{
+                await sendEmail({
+                    email: user.email,
+                    subject: 'Account Deactivated',
+                    message: 'Your account has been deactivated. Please contact support if this is a mistake.',
+                    html: '<p>Your account has been <strong>deactivated</strong>. Please <a href="mailto:support@example.com">contact support</a> if this is a mistake.</p>'
+                  });
+            }
+           
             res.json(user)
         }
     }catch(err){
@@ -255,6 +295,14 @@ userCtrl.isVerify=async(req,res)=>{
             const user=await User.findByIdAndUpdate(id,{isVerify},{new:true})
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
+            }
+            if(req.body.isVerify){
+                await sendEmail({
+                    email: user.email,
+                    subject: 'Account Verified',
+                    message: 'Your account has been successfully verified.',
+                    html: '<p>Your account has been <strong>successfully verified</strong>.</p>'
+                  });
             }
             res.json(user)
         }

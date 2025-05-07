@@ -1,4 +1,4 @@
-import Message from "../models/messageModel";
+import Message from "../models/messageModel.js";
 import { validationResult } from "express-validator";
 const messageCtrl={}
 

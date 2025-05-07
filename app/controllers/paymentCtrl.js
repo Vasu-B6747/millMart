@@ -121,34 +121,35 @@ if(!errors.isEmpty()){
   }
 };
 
-// 6. Get Payments by Buyer
-paymentCtrl.getPaymentsByBuyer = async (req, res) => {
+// 6. Get Payments of users
+paymentCtrl.getUserPayments = async (req, res) => {
   try {
-    const payments = await Payment.find({ buyer: req.userId })
-      .populate('seller', 'name')
-      .populate('equipmentId', 'name');
+    let payments = [];
+
+    if (req.role === 'buyer') {
+      payments = await Payment.find({ buyer: req.userId })
+        .populate('seller', 'name')
+        .populate('equipmentId', 'name');
+    } else if (req.role === 'seller') {
+      payments = await Payment.find({ seller: req.userId })
+        .populate('buyer', 'name')
+        .populate('equipmentId', 'name');
+    } else if (req.role === 'admin') {
+      payments = await Payment.find()
+        .populate('buyer', 'name')
+        .populate('seller', 'name')
+        .populate('equipmentId', 'name');
+    } else {
+      return res.status(403).json({ error: 'Unauthorized role' });
+    }
 
     res.status(200).json(payments);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to fetch buyer payments' });
+    res.status(500).json({ error: 'Failed to fetch payments' });
   }
 };
 
-// 7. Get Payments by Seller
-paymentCtrl.getPaymentsBySeller = async (req, res) => {
-
-  try {
-    const payments = await Payment.find({ seller: req.userId })
-      .populate('buyer', 'name')
-      .populate('equipmentId', 'name');
-
-    res.status(200).json(payments);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to fetch seller payments' });
-  }
-};
 
 // 8. Delete a Payment (Admin)
 paymentCtrl.deletePayment = async (req, res) => {
