@@ -52,19 +52,19 @@ export const equipmentValidationSchema={
             errorMessage:'Please provide condition either be new or used'
         }
     },
-    photos:{
-        in:['body'],
-        exists:{errorMessage:'photos field is required'},
-        notEmpty:{errorMessage:'photos field is not empty'},
-        isArray: {
-            options: { min: 1, max: 5 },
-            errorMessage: 'photos should be an array of 1 to 5 items'
-        },
-        custom: {
-            options: (value) => value.every(url => typeof url === 'string' && url.trim() !== ''),
-            errorMessage: 'Each photo must be a non-empty string'
-        }
-    },
+    // photos:{
+    //     in:['body'],
+    //     exists:{errorMessage:'photos field is required'},
+    //     notEmpty:{errorMessage:'photos field is not empty'},
+    //     isArray: {
+    //         options: { min: 1, max: 5 },
+    //         errorMessage: 'photos should be an array of 1 to 5 items'
+    //     },
+    //     custom: {
+    //         options: (value) => value.every(url => typeof url === 'string' && url.trim() !== ''),
+    //         errorMessage: 'Each photo must be a non-empty string'
+    //     }
+    // },
     equipmentType:{
         in:['body'],
         exists:{errorMessage:'equipmentType field is required'},
@@ -74,24 +74,24 @@ export const equipmentValidationSchema={
             errorMessage:'Please provide a valid type'
         }
     },
-    location: {
-        in: ['body'],
-        custom: {
-          options: (value) => {
-            return (
-              value &&
-              typeof value === 'object' &&
-              value.type === 'Point' &&
-              Array.isArray(value.coordinates) &&
-              value.coordinates.length === 2 &&
-              typeof value.coordinates[0] === 'number' &&
-              typeof value.coordinates[1] === 'number' &&
-              typeof value.address === 'string' &&
-              value.address.trim() !== ''
-            );
-          },
-          errorMessage: 'location must be a valid GeoJSON Point with address and coordinates [lng, lat]'
-        }
-      }
+    // location: {
+    //     in: ['body'],
+    //     custom: {
+    //       options: (value) => {
+    //         return (
+    //           value &&
+    //           typeof value === 'object' &&
+    //           value.type === 'Point' &&
+    //           Array.isArray(value.coordinates) &&
+    //           value.coordinates.length === 2 &&
+    //           typeof value.coordinates[0] === 'number' &&
+    //           typeof value.coordinates[1] === 'number' &&
+    //           typeof value.address === 'string' &&
+    //           value.address.trim() !== ''
+    //         );
+    //       },
+    //       errorMessage: 'location must be a valid GeoJSON Point with address and coordinates [lng, lat]'
+    //     }
+    //   }
       
 }

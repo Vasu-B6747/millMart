@@ -41,8 +41,8 @@ app.put('/active/:id',authenticateUser,authorisedUser(['admin']),checkSchema(idV
 app.put('/verify/:id',authenticateUser,authorisedUser(['admin']),checkSchema(idValidationSchema),userCtrl.isVerify)
 
 //equipment
-// app.post('/equipment',authenticateUser,upload.array('photos', 5), checkSchema(equipmentValidationSchema),equipmentCtrl.create)
-app.post('/equipment',authenticateUser,authorisedUser(['seller']),checkSchema(equipmentValidationSchema),equipmentCtrl.create)
+app.post('/equipment',authenticateUser,upload.array('photos', 5), checkSchema(equipmentValidationSchema),equipmentCtrl.create)
+// app.post('/equipment',authenticateUser,authorisedUser(['seller']),checkSchema(equipmentValidationSchema),equipmentCtrl.create)
 app.get('/equipments',equipmentCtrl.list)
 app.delete('/equipment/:id',authenticateUser,checkSchema(idValidationSchema),equipmentCtrl.remove)
 app.put('/equipment/:id',authenticateUser,checkSchema(idValidationSchema),checkSchema(equipmentValidationSchema),equipmentCtrl.update)
@@ -75,8 +75,8 @@ app.get('/payments',authenticateUser,authorisedUser(['admin']),paymentCtrl.getAl
 app.delete('/payment/:id',authenticateUser,authorisedUser(['admin']),checkSchema(idValidationSchema),paymentCtrl.deletePayment)
 app.get('/payment/:id',authenticateUser,checkSchema(idValidationSchema),paymentCtrl.getPaymentById)
 app.get('/payment/user',authenticateUser,paymentCtrl.getUserPayments)
-app.post('/payment/razor',authenticateUser,paymentCtrl.createRazorpayOrder)
-app.post('/payments/verify-razorpay',authenticateUser,paymentCtrl.verifyRazorpayPayment)
+app.post('/payment/razor',paymentCtrl.createRazorpayOrder)
+app.post('/payments/verify-razorpay',paymentCtrl.verifyRazorpayPayment)
 app.patch('/payment/complete/:id',authenticateUser,checkSchema(idValidationSchema),paymentCtrl.completePayment)
 app.patch('/payment/refund/:id',authenticateUser,checkSchema(idValidationSchema),paymentCtrl.refundPayment)
 

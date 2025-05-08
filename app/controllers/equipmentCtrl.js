@@ -5,70 +5,110 @@ import {validationResult} from 'express-validator'
 //
 const equipmentCtrl={}
 //1.create
-equipmentCtrl.create=async(req,res)=>{
-    const errors=validationResult(req)
-    if(!errors.isEmpty()){
-        return res.status(400).json({error:errors.array()})
+// equipmentCtrl.create=async(req,res)=>{
+//     const errors=validationResult(req)
+//     if(!errors.isEmpty()){
+//         return res.status(400).json({error:errors.array()})
+//     }
+//     const {seller,title,description,equipmentType,brand,model,yearManufactured,condition,price,location,photos}=req.body
+//     try{
+//         const equipment= new Equipment({seller,title,description,equipmentType,brand,model,yearManufactured,condition,price,location,photos})
+//         equipment.seller=req.userId
+//         await equipment.save()
+//         res.status(201).json(equipment)
+//     }catch(err){
+//         console.log(err)
+//         res.status(500).json({error:'Something went wrong'})
+//     }
+// }
+
+
+equipmentCtrl.create = async (req, res) => {
+    
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: errors.array() });
+  }
+
+  const {
+    title, description, equipmentType, brand, model,
+    yearManufactured, condition, price, location, photos
+  } = req.body;
+  let locationObj;
+  if (typeof location === 'string') {
+    try {
+      locationObj = JSON.parse(location);
+    } catch {
+      return res.status(400).json({ error: 'Invalid JSON in location field' });
     }
-    const {seller,title,description,equipmentType,brand,model,yearManufactured,condition,price,location,photos}=req.body
-    try{
-        const equipment= new Equipment({seller,title,description,equipmentType,brand,model,yearManufactured,condition,price,location,photos})
-        equipment.seller=req.userId
-        await equipment.save()
-        res.status(201).json(equipment)
-    }catch(err){
-        console.log(err)
-        res.status(500).json({error:'Something went wrong'})
-    }
-}
+  } else {
+    locationObj = location;
+  }
+  
+  // Validate coordinates
+  if (
+    !locationObj?.coordinates ||
+    !Array.isArray(locationObj.coordinates) ||
+    locationObj.coordinates.length !== 2 ||
+    isNaN(parseFloat(locationObj.coordinates[0])) ||
+    isNaN(parseFloat(locationObj.coordinates[1]))
+  ) {
+    return res.status(400).json({ error: 'Invalid coordinates in location' });
+  }
+  try {
+    // Upload photos
+    // const uploadResults = await Promise.all(
+    //   req.files.map(file =>
+    //     cloudinary.uploader.upload_stream({ folder: 'equipment' }, (error, result) => {
+    //       if (error) throw error;
+    //       return result.secure_url;
+    //     })(file.buffer)
+    //   )
+    // );
+    const uploadResults = await Promise.all(
+        req.files.map(file => {
+          return new Promise((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+              { folder: 'equipment' },
+              (error, result) => {
+                if (error) return reject(error);
+                resolve(result.secure_url);
+              }
+            );
+            stream.end(file.buffer); // Pipe the file buffer into the stream
+          });
+        })
+      );
+      
+  
+    const equipment = new Equipment({
+      seller: req.userId,
+      title,
+      description,
+      equipmentType,
+      brand,
+      model,
+      yearManufactured,
+      condition,
+      price,
+      location:{
+        type: 'Point',
+        coordinates: [
+          parseFloat(locationObj.coordinates[0]),
+          parseFloat(locationObj.coordinates[1])
+        ],
+        address: locationObj.address || ''
+      },
+      photos: uploadResults
+    });
 
-
-// equipmentCtrl.create = async (req, res) => {
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     return res.status(400).json({ error: errors.array() });
-//   }
-
-//   const {
-//     title, description, equipmentType, brand, model,
-//     yearManufactured, condition, price, locationName, lat, lng
-//   } = req.body;
-
-//   try {
-//     // Upload photos
-//     const uploadResults = await Promise.all(
-//       req.files.map(file =>
-//         cloudinary.uploader.upload_stream({ folder: 'equipment' }, (error, result) => {
-//           if (error) throw error;
-//           return result.secure_url;
-//         })(file.buffer)
-//       )
-//     );
-
-//     const equipment = new Equipment({
-//       seller: req.userId,
-//       title,
-//       description,
-//       equipmentType,
-//       brand,
-//       model,
-//       yearManufactured,
-//       condition,
-//       price,
-//       location: {
-//         name: locationName,
-//         coordinates: [parseFloat(lng), parseFloat(lat)]
-//       },
-//       photos: uploadResults
-//     });
-
-//     await equipment.save();
-//     res.status(201).json(equipment);
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).json({ error: 'Something went wrong' });
-//   }
-// };
+    await equipment.save();
+    res.status(201).json(equipment);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: 'Something went wrong' });
+  }
+};
 
 // //2.list
 
