@@ -25,7 +25,9 @@ import { createPaymentValidation } from './app/validators/paymentValidations.js'
 const app=express()
 const port=3045
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+  origin: 'http://localhost:5173'
+}))
 dotenv.config()
 configureDB()
 
@@ -75,8 +77,8 @@ app.get('/payments',authenticateUser,authorisedUser(['admin']),paymentCtrl.getAl
 app.delete('/payment/:id',authenticateUser,authorisedUser(['admin']),checkSchema(idValidationSchema),paymentCtrl.deletePayment)
 app.get('/payment/:id',authenticateUser,checkSchema(idValidationSchema),paymentCtrl.getPaymentById)
 app.get('/payment/user',authenticateUser,paymentCtrl.getUserPayments)
-app.post('/payment/razor',paymentCtrl.createRazorpayOrder)
-app.post('/payments/verify-razorpay',paymentCtrl.verifyRazorpayPayment)
+app.post('/payment/razor',authenticateUser,paymentCtrl.createRazorpayOrder)
+app.post('/payments/verify-razorpay',authenticateUser,paymentCtrl.verifyRazorpayPayment)
 app.patch('/payment/complete/:id',authenticateUser,checkSchema(idValidationSchema),paymentCtrl.completePayment)
 app.patch('/payment/refund/:id',authenticateUser,checkSchema(idValidationSchema),paymentCtrl.refundPayment)
 
