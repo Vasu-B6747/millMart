@@ -1,12 +1,26 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import Millmart from './componenets/Millmart';
-import Login from './componenets/Login';
-import Register from './componenets/Register';
-import LandingPage from './componenets/LandingPage';
+import { useSelector,useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { fetchUserAccount } from './slices/userSlice';
+import Millmart from './components/Millmart';
+import Login from './components/Login';
+import Register from './components/Register';
+import LandingPage from './components/LandingPage';
+import Profile from './components/Profile';
+import ForgotPassowrd from './components/ForgotPasswordPage';
+import ResetPassword from './components/ResetPassword';
+import Allusers from './components/Allusers';
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.user);
+  const dispatch=useDispatch()
+   useEffect(()=>{
+              if(localStorage.getItem('token')){
+                  dispatch(fetchUserAccount())
+                  
+              }
+              // dispatch(fetchAllUsers())
+          },[dispatch])
 
   return (
     <Routes>
@@ -14,9 +28,15 @@ function App() {
       <Route path="/" element={isLoggedIn ? <Navigate to="/dashboard" /> : <LandingPage />} />
       <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Login />} />
       <Route path="/register" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Register />} />
+      <Route path='/forgot' element={<ForgotPassowrd/>} />
+      <Route path='/reset/:token' element={<ResetPassword/>} />
 
       {/* Protected Routes */}
-      <Route path="/dashboard" element={isLoggedIn ? <Millmart /> : <Navigate to="/" />} />
+      <Route path="/dashboard" element={isLoggedIn ? <Millmart /> : <Navigate to="/" />}>
+        {/* Nested routes that render inside MainContent */}
+        <Route path="users" element={<Allusers />} />
+        <Route path="account" element={<Profile />} />
+      </Route>
     </Routes>
   );
 }
