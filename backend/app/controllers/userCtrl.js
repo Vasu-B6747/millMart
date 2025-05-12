@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
 import sendEmail from '../Utils/resetEmail.js'
 import { validationResult } from 'express-validator'
+import cloudinary from '../Utils/cloudinary.js'
 const userCtrl={}
 userCtrl.register=async(req,res)=>{
     const errors=validationResult(req)
@@ -29,6 +30,24 @@ userCtrl.register=async(req,res)=>{
         if (count > 0 && !user.role) {
             return res.status(400).json({ error: 'Role is required for new users' });
         }
+        if (req.file) {
+  const streamUpload = (buffer) => {
+    return new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { folder: 'millmart_users' },
+        (error, result) => {
+          if (result) resolve(result);
+          else reject(error);
+        }
+      );
+      stream.end(buffer);
+    });
+  };
+
+  const result = await streamUpload(req.file.buffer);
+  user.profilePic = result.secure_url;
+}
+
         const salt=await bcryptjs.genSalt()
         const hash=await bcryptjs.hash(body.password,salt)
         user.password=hash
@@ -171,7 +190,7 @@ userCtrl.forgotPassword=async(req,res)=>{
     user.resetPasswordToken=token
     user.resetPasswordExpires=Date.now()+600000
     await user.save()
-    const resetLink=`${process.env.FRONTEND_URL}/resetpassword/${token}`
+    const resetLink=`${process.env.FRONTEND_URL}/reset/${token}`
     const subject = 'Reset Your Password';
 const textMessage = `We have received a reset password request. Please use the link below to reset your password:\n\n${resetLink}\n\nThis link is valid for 10 minutes.`;
 const html = `
@@ -183,7 +202,7 @@ const html = `
   </p>
   <p>This link will expire in 10 minutes.</p>
 `;
-    // const message=`We have received reset password request.Please use the below the link to reset your password \n\n${resetLink} \n\n.This reset password link valid upto 10 minutes`
+    const message=`We have received reset password request.Please use the below the link to reset your password \n\n${resetLink} \n\n.This reset password link valid upto 10 minutes`
     console.log(user.email)
     sendEmail({email:user.email,message:message,subject,html})
     res.json({ message: 'Password reset link sent to email', resetLink })

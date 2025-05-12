@@ -32,7 +32,7 @@ dotenv.config()
 configureDB()
 
 //user
-app.post('/register',checkSchema(registerValidationSchema),userCtrl.register)
+app.post('/register', upload.single('profilePic'),checkSchema(registerValidationSchema),userCtrl.register)
 app.post('/login',checkSchema(userLoginSchema),userCtrl.login)
 app.get('/profile',authenticateUser,userCtrl.profile)
 app.get('/users',authenticateUser,authorisedUser(['admin']),userCtrl.list)
