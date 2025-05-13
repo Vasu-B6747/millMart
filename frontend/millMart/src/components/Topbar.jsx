@@ -62,6 +62,7 @@ export default function Topbar() {
   const toggleDropdown = () => {
     setDropdownOpen((prev) => !prev);
   };
+  if(!userData) return false
 
   return (
     <header className="bg-white shadow px-4 py-3 flex justify-between items-center">

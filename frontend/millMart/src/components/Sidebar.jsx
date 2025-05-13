@@ -20,6 +20,7 @@ export default function Sidebar() {
           <li><Link to="/" className="block px-4 py-2 hover:bg-blue-100">Home</Link></li>
           <li><Link to="/listings" className="block px-4 py-2 hover:bg-blue-100">Listings</Link></li>
           <li><Link to="/dashboard/users" className="block px-4 py-2 hover:bg-blue-100">Users</Link></li>
+          <li><Link to="/dashboard/account" className="block px-4 py-2 hover:bg-blue-100">Profile</Link></li>
           <li><Link to="/messages" className="block px-4 py-2 hover:bg-blue-100">Messages</Link></li>
           <li><Link to="/settings" className="block px-4 py-2 hover:bg-blue-100">Settings</Link></li>
           <li>

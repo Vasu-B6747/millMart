@@ -34,6 +34,20 @@ export const fetchAllUsers=createAsyncThunk('user/fetchAllUsers',async(_,{reject
         })
     }
 })
+
+//delete user
+export const removeUser=createAsyncThunk('user/removeUser',async(id,{rejectWithValue})=>{
+    try{
+        const response=await axios.delete(`user/${id}`,{headers:{Authorization:localStorage.getItem('token')}})
+        console.log(response.data)
+        return response.data
+    }catch(err){
+        console.log(err)
+        return rejectWithValue({
+            message:'Something went wrong'
+        })
+    }
+})
 const userSlice=createSlice({
     name:'user',
     initialState:{users:[],userData:null,isLoggedIn:false,editId:null,serverErr:null,loading:false},
@@ -69,6 +83,18 @@ const userSlice=createSlice({
         })
         builder.addCase(fetchAllUsers.pending,(state,action)=>{
             state.loading=true
+        })
+        // deleteuser
+    builder.addCase(removeUser.fulfilled, (state, action) => {
+      const index = state.users.findIndex((ele) => ele._id === action.payload._id);
+        if (index !== -1) {
+            state.users.splice(index, 1);
+        }
+  
+        state.userData = null;
+    });
+        builder.addCase(removeUser.rejected,(state,action)=>{
+            state.serverErr=action.payload
         })
     }
 })

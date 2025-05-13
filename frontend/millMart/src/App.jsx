@@ -10,6 +10,7 @@ import Profile from './components/Profile';
 import ForgotPassowrd from './components/ForgotPasswordPage';
 import ResetPassword from './components/ResetPassword';
 import Allusers from './components/Allusers';
+import Userupdate from './components/Userupdate';
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.user);
@@ -36,6 +37,7 @@ function App() {
         {/* Nested routes that render inside MainContent */}
         <Route path="users" element={<Allusers />} />
         <Route path="account" element={<Profile />} />
+        <Route path="userUpdate" element={<Userupdate />} />
       </Route>
     </Routes>
   );
