@@ -108,6 +108,26 @@ userCtrl.profile=async(req,res)=>{
 
 }
 
+//getuserbyid
+userCtrl.getUser=async(req,res)=>{
+    const errors=validationResult(req)
+    if(!errors.isEmpty()){
+        return res.status(400).json({error:errors.array()})
+    }
+    const id=req.params.id
+    try{
+        const user=await User.findById(id)
+        if(!user){
+            return res.status(404).json({error:'user Not Found'})
+        }
+        res.json(user)
+    }catch(err){
+        console.log(err)
+        res.status(500).json({error:'Something went wrong'})
+    }
+
+}
+
 //AllUser
 userCtrl.list=async(req,res)=>{
     try{
@@ -153,9 +173,9 @@ userCtrl.update=async(req,res)=>{
         return res.status(400).json({error:errors.array()})
     }
     const id=req.params.id
-    let {name,profilePic,address,email,password}=req.body
+    let {name,address,email,password}=req.body
     try{
-        const updateData = { name, email, profilePic, address };
+        const updateData = { name, email,password, address };
         if (password) {
             const salt = await bcryptjs.genSalt()
             const hashed = await bcryptjs.hash(password, salt)

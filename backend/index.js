@@ -36,6 +36,8 @@ app.post('/register', upload.single('profilePic'),checkSchema(registerValidation
 app.post('/login',checkSchema(userLoginSchema),userCtrl.login)
 app.get('/profile',authenticateUser,userCtrl.profile)
 app.get('/users',authenticateUser,authorisedUser(['admin']),userCtrl.list)
+app.get('/user/:id',authenticateUser,checkSchema(idValidationSchema),userCtrl.getUser)
+app.delete('/user/:id',authenticateUser,checkSchema(idValidationSchema),userCtrl.remove)
 app.put('/user/:id',authenticateUser,checkSchema(idValidationSchema),userCtrl.update)
 app.post('/forgotpassword',checkSchema(forgotPasswordValidation),userCtrl.forgotPassword)
 app.post('/resetpassword/:token',checkSchema(resetPasswordValidation),userCtrl.resetPassword)
