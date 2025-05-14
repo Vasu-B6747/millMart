@@ -1,10 +1,11 @@
-
+import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { fetchAllUsers } from "../slices/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 
 export default function AllUsers() {
   const dispatch = useDispatch();
+  const navigate=useNavigate()
   const { users } = useSelector((state) => state.user);
 
   useEffect(() => {
@@ -13,6 +14,7 @@ export default function AllUsers() {
 
   return (
     <div className="min-h-full p-6 bg-gray-50">
+     <div className="mb-5"> <button onClick={()=>navigate("/dashboard/users/activate")}>Activate/Verify</button></div>
       <div className="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-6">
         <h2 className="text-2xl font-semibold text-gray-700 mb-6 text-center">All Users</h2>
         <div className="overflow-x-auto">

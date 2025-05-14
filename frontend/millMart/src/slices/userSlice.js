@@ -29,9 +29,10 @@ export const fetchAllUsers=createAsyncThunk('user/fetchAllUsers',async(_,{reject
         return response.data
     }catch(err){
         console.log(err)
-        return rejectWithValue({
-            message:'Something went wrong'
-        })
+       return  rejectWithValue({
+                  message:err.message,
+                  errors:err.response.data.error
+                })
     }
 })
 
@@ -48,6 +49,51 @@ export const removeUser=createAsyncThunk('user/removeUser',async(id,{rejectWithV
         })
     }
 })
+
+//update user
+export const updateUser=createAsyncThunk('user/updateUser',async({userObj,resetForm},{rejectWithValue})=>{
+    try{
+        console.log(userObj)
+        console.log(userObj._id)
+        const response=await axios.put(`user/${userObj._id}`,userObj,{headers:{Authorization:localStorage.getItem('token')}})
+        console.log(response.data)
+        resetForm()
+        return response.data
+    }catch(err){
+        console.log(err)
+        return  rejectWithValue({
+                  message:err.message,
+                  errors:err.response.data.errors
+                })
+    }
+})
+//activate user
+export const activateUser=createAsyncThunk('user/activateUser',async(id,{rejectWithValue})=>{
+    try{
+        const response=await axios.put(`active/${id}`,{isActive:'true'},{headers:{Authorization:localStorage.getItem('token')}})
+        console.log(response.data)
+        return response.data
+    }catch(err){
+        console.log(err)
+        return rejectWithValue({
+            message:'Something went wrong'
+        })
+    }
+})
+// deactivate user
+export const InactivateUser=createAsyncThunk('user/InactivateUser',async(id,{rejectWithValue})=>{
+    try{
+        const response=await axios.put(`active/${id}`,{isActive:'false'},{headers:{Authorization:localStorage.getItem('token')}})
+        console.log(response.data)
+        return response.data
+    }catch(err){
+        console.log(err)
+        return rejectWithValue({
+            message:'Something went wrong'
+        })
+    }
+})
+
 const userSlice=createSlice({
     name:'user',
     initialState:{users:[],userData:null,isLoggedIn:false,editId:null,serverErr:null,loading:false},
@@ -84,18 +130,67 @@ const userSlice=createSlice({
         builder.addCase(fetchAllUsers.pending,(state,action)=>{
             state.loading=true
         })
-        // deleteuser
+    // deleteuser
+    builder.addCase(removeUser.pending, (state) => {
+        state.loading = true;
+    });
     builder.addCase(removeUser.fulfilled, (state, action) => {
       const index = state.users.findIndex((ele) => ele._id === action.payload._id);
         if (index !== -1) {
             state.users.splice(index, 1);
         }
-  
-        state.userData = null;
+         if (state.userData && state.userData._id === action.payload._id) {
+            state.userData = null;
+            state.isLoggedIn = false;
+        }
     });
-        builder.addCase(removeUser.rejected,(state,action)=>{
-            state.serverErr=action.payload
-        })
+    builder.addCase(removeUser.rejected,(state,action)=>{
+            state.serverErr = action.payload;
+            state.loading = false;
+    })
+    //update user
+    builder.addCase(updateUser.fulfilled,(state,action)=>{
+        const index=state.users.findIndex((ele)=>ele._id==action.payload._id)
+        state.users[index]=action.payload
+        if (state.userData._id === action.payload._id) {
+        state.userData = null;
+        state.isLoggedIn=false
+        }
+                
+        // state.editId=null
+    })
+    builder.addCase(updateUser.rejected,(state,action)=>{
+        state.serverErr=action.payload
+                
+    })
+    // activate user
+builder.addCase(activateUser.pending, (state) => {
+  state.loading = true;
+});
+builder.addCase(activateUser.fulfilled, (state, action) => {
+  const index = state.users.findIndex((ele) => ele._id === action.payload._id);
+  state.users[index] = action.payload;
+  state.loading = false;
+});
+builder.addCase(activateUser.rejected, (state, action) => {
+  state.serverErr = action.payload;
+  state.loading = false;
+});
+
+// inactivate user
+builder.addCase(InactivateUser.pending, (state) => {
+  state.loading = true;
+});
+builder.addCase(InactivateUser.fulfilled, (state, action) => {
+  const index = state.users.findIndex((ele) => ele._id === action.payload._id);
+  state.users[index] = action.payload;
+  state.loading = false;
+});
+builder.addCase(InactivateUser.rejected, (state, action) => {
+  state.serverErr = action.payload;
+  state.loading = false;
+});
+        
     }
 })
 export const {login,logout}=userSlice.actions

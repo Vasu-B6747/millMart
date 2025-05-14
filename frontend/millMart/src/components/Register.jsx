@@ -16,10 +16,12 @@ export default function Register() {
  const [role,setRole]=useState('')
  const [clientErrors,setClientErrors]=useState({})
  const [serverErrors,setServerErrors]=useState(null)
+ const [loading,setLoading]=useState(false)
 
 
   const handleSubmit = async(e) => {
     e.preventDefault();
+    setLoading(true)
     const resetForm=()=>{
       setName('')
       setEmail('')
@@ -74,12 +76,18 @@ export default function Register() {
                       // console.log(formData)
             const response = await axios.post('register', formData)
             console.log(response.data); 
+           
             alert('registeration is successfully')
+            resetForm();
+            setClientErrors({});
+            setServerErrors(null);
             navigate('/login'); 
        } catch(err) {
             console.log(err)
-            setServerErrors(err.response.data.error); 
+            setServerErrors(err.response?.data?.error || ['Something went wrong']); 
             setClientErrors({}); 
+       }finally{
+         setLoading(false)
        }
     }
     
@@ -93,7 +101,30 @@ export default function Register() {
     backgroundImage: "url('https://media.istockphoto.com/id/471247018/photo/landscape-shot-rice-mill-with-reflection-and-sunset.jpg?s=612x612&w=0&k=20&c=VlNF6AvnJCzSlRiGLUdDca60A7vdsQW2N-lTtqMfdBw=')"
   }}
 >
-
+{loading && (
+      <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+        <svg
+          className="animate-spin h-10 w-10 text-indigo-600"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+          ></path>
+        </svg>
+      </div>
+    )}
       <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
         <h2 className="text-2xl font-bold text-center text-gray-700">Create Account</h2>
          { serverErrors && (

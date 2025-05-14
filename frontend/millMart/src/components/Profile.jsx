@@ -19,6 +19,7 @@ export default function Profile(){
    const handleDelete = async (id) => {
     try {
       await dispatch(removeUser(id));
+      window.confirm('Are you sure to delete delete Account')
       // Don't navigate here anymore — useEffect will handle it
     } catch (err) {
       console.error("Delete failed", err);
@@ -41,7 +42,7 @@ export default function Profile(){
       <button className="mr-10 bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded" onClick={()=>{handleDelete(userData._id)}}
       
       >Delete</button>
-      <button className="mr-10 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Edit</button>
+      <button className="mr-10 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded" onClick={()=>navigate(`/dashboard/userUpdate/${userData._id}`)}>Edit</button>
       </div>
       
       </div>
