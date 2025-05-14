@@ -68,7 +68,7 @@ console.log(currentUser)
     if (!user.name.trim()) errors.name = 'Name is required';
     if (!user.email.trim()) errors.email = 'Email is required';
     if (!user.address.trim()) errors.address = 'Address is required';
-    if (!user.password.trim()) errors.address = 'Password is required';
+    // if (!user.password.trim()) errors.address = 'Password is required';
     if (Object.keys(errors).length > 0) {
       setClientErrors(errors);
       setLoading(false);

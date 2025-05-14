@@ -93,6 +93,32 @@ export const InactivateUser=createAsyncThunk('user/InactivateUser',async(id,{rej
         })
     }
 })
+//verifyuser
+export const verifyUser=createAsyncThunk('user/verifyUser',async(id,{rejectWithValue})=>{
+    try{
+        const response=await axios.put(`verify/${id}`,{isVerify:'true'},{headers:{Authorization:localStorage.getItem('token')}})
+        console.log(response.data)
+        return response.data
+    }catch(err){
+        console.log(err)
+        return rejectWithValue({
+            message:'Something went wrong'
+        })
+    }
+})
+//unverify
+export const unverifyUser=createAsyncThunk('user/unverifyUser',async(id,{rejectWithValue})=>{
+    try{
+        const response=await axios.put(`verify/${id}`,{isVerify:'false'},{headers:{Authorization:localStorage.getItem('token')}})
+        console.log(response.data)
+        return response.data
+    }catch(err){
+        console.log(err)
+        return rejectWithValue({
+            message:'Something went wrong'
+        })
+    }
+})
 
 const userSlice=createSlice({
     name:'user',
@@ -187,6 +213,32 @@ builder.addCase(InactivateUser.fulfilled, (state, action) => {
   state.loading = false;
 });
 builder.addCase(InactivateUser.rejected, (state, action) => {
+  state.serverErr = action.payload;
+  state.loading = false;
+});
+//verifyUser
+builder.addCase(verifyUser.pending, (state) => {
+  state.loading = true;
+});
+builder.addCase(verifyUser.fulfilled, (state, action) => {
+  const index = state.users.findIndex((ele) => ele._id === action.payload._id);
+  state.users[index] = action.payload;
+  state.loading = false;
+});
+builder.addCase(verifyUser.rejected, (state, action) => {
+  state.serverErr = action.payload;
+  state.loading = false;
+});
+//unVerifyuser
+builder.addCase(unverifyUser.pending, (state) => {
+  state.loading = true;
+});
+builder.addCase(unverifyUser.fulfilled, (state, action) => {
+  const index = state.users.findIndex((ele) => ele._id === action.payload._id);
+  state.users[index] = action.payload;
+  state.loading = false;
+});
+builder.addCase(unverifyUser.rejected, (state, action) => {
   state.serverErr = action.payload;
   state.loading = false;
 });
