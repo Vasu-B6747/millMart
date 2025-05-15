@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector,useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { fetchUserAccount } from './slices/userSlice';
+import { fetchEquipments } from './slices/equipmentSlice';
 import Millmart from './components/Millmart';
 import Login from './components/Login';
 import Register from './components/Register';
@@ -12,6 +13,8 @@ import ResetPassword from './components/ResetPassword';
 import Allusers from './components/Allusers';
 import UserUpdateForm from './components/Userupdate';
 import ActivateUser from './components/ActiveUsers';
+import EquipmentForm from './components/EquipmentForm';
+import Equipments from './components/Equipments';
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.user);
@@ -21,7 +24,7 @@ function App() {
                   dispatch(fetchUserAccount())
                   
               }
-              // dispatch(fetchAllUsers())
+              dispatch(fetchEquipments())
           },[dispatch])
 
   return (
@@ -40,7 +43,8 @@ function App() {
         <Route path="account" element={<Profile />} />
         <Route path="userUpdate/:id" element={<UserUpdateForm />} />
         <Route path="users/activate" element={<ActivateUser/>} />
-
+        <Route path="equipment" element={<EquipmentForm/>} />
+        <Route path="equipments" element={<Equipments/>} />
       </Route>
     </Routes>
   );
