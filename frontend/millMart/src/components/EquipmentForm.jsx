@@ -38,7 +38,8 @@ const dispatch=useDispatch()
   };
 
   const getCoordinatesFromAddress = async (address) => {
-    const apiKey = "47f74b10b5a946cb886c03b86ec54d2e"; // Your OpenCage API key
+     const apiKey = import.meta.env.VITE_OPENCAGE_API_KEY;
+; // Your OpenCage API key
     const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(address)}&key=${apiKey}`;
     console.log("Geocoding URL:", url);
 

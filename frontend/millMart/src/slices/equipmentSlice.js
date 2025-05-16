@@ -29,6 +29,51 @@ export const fetchEquipments=createAsyncThunk('equipments/fetchEquipments',async
         })
     }
 })
+//approveEquipments
+export const approveEquipments=createAsyncThunk('equipments/approveEquipments',async(id,{rejectWithValue})=>{
+              try{
+                console.log()
+                const response=await axios.put(`equipment/approve/${id}`,{isApproved:'true'},{headers:{Authorization:localStorage.getItem('token')}})
+                console.log(response.data)
+                return response.data
+              }catch(err){
+                console.log(err)
+                return  rejectWithValue({
+                  message:err.message,
+                  errors:err.response.data.errors
+                })
+              }
+            }) 
+//verify
+export const verifyEquipments=createAsyncThunk('equipments/verifyEquipments',async(id,{rejectWithValue})=>{
+              try{
+                console.log()
+                const response=await axios.put(`equipment/verify/${id}`,{isVerified:'true'},{headers:{Authorization:localStorage.getItem('token')}})
+                console.log(response.data)
+                return response.data
+              }catch(err){
+                console.log(err)
+                return  rejectWithValue({
+                  message:err.message,
+                  errors:err.response.data.errors
+                })
+              }
+})   
+//isSold
+export const markSold=createAsyncThunk('equipments/markSold',async(id,{rejectWithValue})=>{
+              try{
+                console.log()
+                const response=await axios.patch(`equipment/sold/${id}`,{isSold:'true'},{headers:{Authorization:localStorage.getItem('token')}})
+                console.log(response.data)
+                return response.data
+              }catch(err){
+                console.log(err)
+                return  rejectWithValue({
+                  message:err.message,
+                  errors:err.response.data.errors
+                })
+              }
+})             
 const equipmentSlice=createSlice({
     name:'equipments',
     initialState:{equipmentData:[],loading:false,serverErr:null},
@@ -57,6 +102,48 @@ const equipmentSlice=createSlice({
           state.serverErr = action.payload;
           state.loading = false;
         });
+        //approve
+        builder.addCase(approveEquipments.pending, (state) => {
+          state.loading = true;
+        });
+        builder.addCase(approveEquipments.fulfilled, (state, action) => {
+          const index=state.equipmentData.findIndex((ele)=>ele._id==action.payload._id)
+          state.productData[index]=action.payload
+          state.serverErr=null
+          state.loading=false
+        });
+        builder.addCase(approveEquipments.rejected, (state, action) => {
+          state.serverErr = action.payload;
+          state.loading = false;
+        });
+        //verify verifyEquipments
+        builder.addCase(verifyEquipments.pending, (state) => {
+          state.loading = true;
+        });
+        builder.addCase(verifyEquipments.fulfilled, (state, action) => {
+          const index=state.equipmentData.findIndex((ele)=>ele._id==action.payload._id)
+          state.productData[index]=action.payload
+          state.serverErr=null
+          state.loading=false
+        });
+        builder.addCase(verifyEquipments.rejected, (state, action) => {
+          state.serverErr = action.payload;
+          state.loading = false;
+        });
+      //markSold 
+       builder.addCase(markSold.pending, (state) => {
+          state.loading = true;
+        });
+        builder.addCase(markSold.fulfilled, (state, action) => {
+          const index=state.equipmentData.findIndex((ele)=>ele._id==action.payload._id)
+          state.productData[index]=action.payload
+          state.serverErr=null
+          state.loading=false
+        });
+        builder.addCase(markSold.rejected, (state, action) => {
+          state.serverErr = action.payload;
+          state.loading = false;
+        }); 
     }
 })
 export default equipmentSlice.reducer

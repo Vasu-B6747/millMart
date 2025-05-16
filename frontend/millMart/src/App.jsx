@@ -15,6 +15,7 @@ import UserUpdateForm from './components/Userupdate';
 import ActivateUser from './components/ActiveUsers';
 import EquipmentForm from './components/EquipmentForm';
 import Equipments from './components/Equipments';
+import EquipmentCard from './components/EquipmentCard';
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.user);
@@ -45,6 +46,7 @@ function App() {
         <Route path="users/activate" element={<ActivateUser/>} />
         <Route path="equipment" element={<EquipmentForm/>} />
         <Route path="equipments" element={<Equipments/>} />
+        <Route path="equipmentcard" element={<EquipmentCard/>} />
       </Route>
     </Routes>
   );
