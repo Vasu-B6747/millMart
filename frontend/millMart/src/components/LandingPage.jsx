@@ -10,7 +10,7 @@ import ReactPaginate from "react-paginate";
 
 export default function LandingPage() {
   const { equipmentData } = useSelector((state) => state.equipments);
-  const results = equipmentData?.results || [];
+  const results = equipmentData || [];
 
   const [selectedItem, setSelectedItem] = useState(null);
   const [previewImages, setPreviewImages] = useState({});

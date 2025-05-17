@@ -20,10 +20,10 @@ export const fetchEquipments=createAsyncThunk('equipments/fetchEquipments',async
     try{
         const response=await axios.get('equipments')
         console.log(response.data)
-        return response.data
+        return response.data.results
     }catch(err){
         console.log(err)
-        rejectWithValue({
+       return rejectWithValue({
             message:err.message,
             errors:err.response.data.error
         })
@@ -50,7 +50,7 @@ export const verifyEquipments=createAsyncThunk('equipments/verifyEquipments',asy
                 console.log()
                 const response=await axios.put(`equipment/verify/${id}`,{isVerified:'true'},{headers:{Authorization:localStorage.getItem('token')}})
                 console.log(response.data)
-                return response.data
+                return response.data.equipment
               }catch(err){
                 console.log(err)
                 return  rejectWithValue({
@@ -73,7 +73,36 @@ export const markSold=createAsyncThunk('equipments/markSold',async(id,{rejectWit
                   errors:err.response.data.errors
                 })
               }
-})             
+})
+export const rejectEquipment=createAsyncThunk('equipments/rejectEquipment',async(id,{rejectWithValue})=>{
+              try{
+                console.log()
+                const response=await axios.put(`equipment/approve/${id}`,{isApproved:'false'},{headers:{Authorization:localStorage.getItem('token')}})
+                console.log(response.data)
+                return response.data
+              }catch(err){
+                console.log(err)
+                return  rejectWithValue({
+                  message:err.message,
+                  errors:err.response.data.errors
+                })
+              }
+            })
+            
+export const unverifyEquipment=createAsyncThunk('equipments/unverifyEquipment',async(id,{rejectWithValue})=>{
+              try{
+                console.log()
+                const response=await axios.put(`equipment/verify/${id}`,{isVerified:'false'},{headers:{Authorization:localStorage.getItem('token')}})
+                console.log(response.data)
+                return response.data.equipment
+              }catch(err){
+                console.log(err)
+                return  rejectWithValue({
+                  message:err.message,
+                  errors:err.response.data.errors
+                })
+              }
+            })            
 const equipmentSlice=createSlice({
     name:'equipments',
     initialState:{equipmentData:[],loading:false,serverErr:null},
@@ -83,7 +112,7 @@ const equipmentSlice=createSlice({
           state.loading = true;
         });
         builder.addCase(createEquipment.fulfilled, (state, action) => {
-          state.equipmentData=state.equipmentData.push(action.payload)
+          state.equipmentData.push(action.payload)
           state.loading = false;
         });
         builder.addCase(createEquipment.rejected, (state, action) => {
@@ -108,7 +137,7 @@ const equipmentSlice=createSlice({
         });
         builder.addCase(approveEquipments.fulfilled, (state, action) => {
           const index=state.equipmentData.findIndex((ele)=>ele._id==action.payload._id)
-          state.productData[index]=action.payload
+          state.equipmentData[index]=action.payload
           state.serverErr=null
           state.loading=false
         });
@@ -122,7 +151,7 @@ const equipmentSlice=createSlice({
         });
         builder.addCase(verifyEquipments.fulfilled, (state, action) => {
           const index=state.equipmentData.findIndex((ele)=>ele._id==action.payload._id)
-          state.productData[index]=action.payload
+          state.equipmentData[index]=action.payload
           state.serverErr=null
           state.loading=false
         });
@@ -136,7 +165,7 @@ const equipmentSlice=createSlice({
         });
         builder.addCase(markSold.fulfilled, (state, action) => {
           const index=state.equipmentData.findIndex((ele)=>ele._id==action.payload._id)
-          state.productData[index]=action.payload
+          state.equipmentData[index]=action.payload
           state.serverErr=null
           state.loading=false
         });
@@ -144,6 +173,34 @@ const equipmentSlice=createSlice({
           state.serverErr = action.payload;
           state.loading = false;
         }); 
+        //reject
+         builder.addCase(rejectEquipment.pending, (state) => {
+          state.loading = true;
+        });
+        builder.addCase(rejectEquipment.fulfilled, (state, action) => {
+          const index=state.equipmentData.findIndex((ele)=>ele._id==action.payload._id)
+          state.equipmentData[index]=action.payload
+          state.serverErr=null
+          state.loading=false
+        });
+        builder.addCase(rejectEquipment.rejected, (state, action) => {
+          state.serverErr = action.payload;
+          state.loading = false;
+        });
+        //unverify
+         builder.addCase(unverifyEquipment.pending, (state) => {
+          state.loading = true;
+        });
+        builder.addCase(unverifyEquipment.fulfilled, (state, action) => {
+          const index=state.equipmentData.findIndex((ele)=>ele._id==action.payload._id)
+          state.equipmentData[index]=action.payload
+          state.serverErr=null
+          state.loading=false
+        });
+        builder.addCase(unverifyEquipment.rejected, (state, action) => {
+          state.serverErr = action.payload;
+          state.loading = false;
+        });
     }
 })
 export default equipmentSlice.reducer

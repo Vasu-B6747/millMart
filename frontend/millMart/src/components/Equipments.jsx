@@ -1,7 +1,12 @@
 import { useSelector,useDispatch } from "react-redux"
+import { useNavigate } from "react-router-dom"
 export default function Equipments(){
+  const navigate=useNavigate()
     const {equipmentData}=useSelector((state)=>{
         return state.equipments
+    })
+    const {userData}=useSelector((state)=>{
+      return state.user
     })
     console.log(equipmentData)
     const handleVerify = (id) => {
@@ -21,6 +26,7 @@ export default function Equipments(){
     return(
         
          <div className="p-6">
+          <div><button onClick={()=>navigate('/dashboard/equipments/approve')}>Approve/verify Equips</button></div>
       <h2 className="text-2xl font-semibold mb-4 text-indigo-700">List of Equipments</h2>
 
       <div className="overflow-x-auto">
@@ -38,11 +44,11 @@ export default function Equipments(){
               <th className="border px-4 py-2 text-left">Location</th>
               <th className="border px-4 py-2 text-left">Photo</th>
               <th className="border px-4 py-2 text-left">Status</th>
-              <th className="border px-4 py-2 text-left">Actions</th>
+             {userData.role=='seller' &&<th className="border px-4 py-2 text-left">Actions</th>}
             </tr>
           </thead>
           <tbody>
-            {equipmentData?.results?.map((ele) => (
+            {equipmentData?.map((ele) => (
               <tr key={ele._id} className="hover:bg-gray-50">
                 <td className="border px-4 py-2">{ele.title}</td>
                 <td className="border px-4 py-2">{ele.seller?.name}</td>
@@ -60,7 +66,7 @@ export default function Equipments(){
                     className="w-16 h-16 object-cover rounded"
                   />
                 </td>
-                <td className="border px-4 py-2 space-y-1">
+               <td className="border px-4 py-2 space-y-1">
                   <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${ele.isVerified ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'}`}>
                     {ele.isVerified ? 'Verified' : 'Not Verified'}
                   </span>
@@ -73,7 +79,7 @@ export default function Equipments(){
                     {ele.isApproved ? 'Approved' : 'Not Approved'}
                   </span>
                 </td>
-                <td className="border px-4 py-2 space-x-1">
+               {userData.role=='seller'&& <td className="border px-4 py-2 space-x-1">
                   <button
                     onClick={() => handleVerify(ele._id)}
                     className="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs"
@@ -92,7 +98,7 @@ export default function Equipments(){
                   >
                     ✅ Approve
                   </button>
-                </td>
+                </td>}
               </tr>
             ))}
           </tbody>
