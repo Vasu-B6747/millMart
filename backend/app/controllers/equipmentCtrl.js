@@ -2,6 +2,7 @@ import Equipment from "../models/EquipmentModel.js"
 import paginateQuery from '../Utils/paginate.js'
 import cloudinary from '../Utils/cloudinary.js'
 import {validationResult} from 'express-validator'
+import sendEmail from '../Utils/resetEmail.js'
 //
 const equipmentCtrl={}
 //1.create
@@ -115,7 +116,9 @@ equipmentCtrl.create = async (req, res) => {
 
 equipmentCtrl.list = async (req, res) => {
     try {
-        const result = await paginateQuery(Equipment, {}, {
+        const queryBuilder = Equipment.find().populate('seller', 'name email');
+
+        const result = await paginateQuery(queryBuilder, {
             page: req.query.page,
             limit: req.query.limit,
             sort: { createdAt: -1 }
@@ -127,6 +130,7 @@ equipmentCtrl.list = async (req, res) => {
         res.status(500).json({ error: 'Something went wrong' });
     }
 };
+
 
 // equipmentCtrl.list=async(req,res)=>{
 //     try{
@@ -280,6 +284,37 @@ equipmentCtrl.search = async (req, res) => {
 //         res.status(500).json({ error: 'Something went wrong' });
 //     }
 // };
+
+equipmentCtrl.search = async (req, res) => {
+    const { type, condition, minPrice, maxPrice } = req.query;
+
+    let filter = {};
+    if (type) filter.equipmentType = type;
+    if (condition) filter.condition = condition;
+    if (minPrice || maxPrice) {
+        filter.price = {};
+        if (minPrice) filter.price.$gte = Number(minPrice);
+        if (maxPrice) filter.price.$lte = Number(maxPrice);
+    }
+
+    try {
+        // Just use find() without populate
+        const queryBuilder = Equipment.find(filter);
+
+        const result = await paginateQuery(queryBuilder, {
+            page: req.query.page,
+            limit: req.query.limit,
+            sort: { createdAt: -1 }
+        });
+
+        res.json(result);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+};
+
+
 //8.approval
 equipmentCtrl.approve = async (req, res) => {
     const errors=validationResult(req)
@@ -328,7 +363,7 @@ equipmentCtrl.verify = async (req, res) => {
               </div>
             `;
           
-            await sendMail({
+            await sendEmail({
               email: equipment.seller.email,
               subject,
               message: textMessage,
@@ -336,7 +371,7 @@ equipmentCtrl.verify = async (req, res) => {
             });
           }
           
-        res.json({ message: 'Equipment approved', equipment });
+        res.json({ message: 'Equipment Verified', equipment });
     } catch (err) {
         console.log(err);
         res.status(500).json({ error: 'Something went wrong' });
