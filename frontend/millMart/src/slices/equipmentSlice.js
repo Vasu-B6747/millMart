@@ -91,7 +91,6 @@ export const rejectEquipment=createAsyncThunk('equipments/rejectEquipment',async
             
 export const unverifyEquipment=createAsyncThunk('equipments/unverifyEquipment',async(id,{rejectWithValue})=>{
               try{
-                console.log()
                 const response=await axios.put(`equipment/verify/${id}`,{isVerified:'false'},{headers:{Authorization:localStorage.getItem('token')}})
                 console.log(response.data)
                 return response.data.equipment
@@ -102,10 +101,24 @@ export const unverifyEquipment=createAsyncThunk('equipments/unverifyEquipment',a
                   errors:err.response.data.errors
                 })
               }
-            })            
+            }) 
+//fetchEquipment
+export const fetchEquipment=createAsyncThunk('equipments/fetchEquipment',async(id,{rejectWithValue})=>{
+              try{
+                const response=await axios.get(`equipment/${id}`)
+                console.log(response.data)
+                return response.data
+              }catch(err){
+                console.log(err)
+                return  rejectWithValue({
+                  message:err.message,
+                  errors:err.response.data.errors
+                })
+              }
+})            
 const equipmentSlice=createSlice({
     name:'equipments',
-    initialState:{equipmentData:[],loading:false,serverErr:null},
+    initialState:{equipmentData:[],loading:false,serverErr:null,equipment:null},
     reducers:{},
     extraReducers:(builder)=>{
         builder.addCase(createEquipment.pending, (state) => {
@@ -198,6 +211,19 @@ const equipmentSlice=createSlice({
           state.loading=false
         });
         builder.addCase(unverifyEquipment.rejected, (state, action) => {
+          state.serverErr = action.payload;
+          state.loading = false;
+        });
+      //fetchEquipment
+       builder.addCase(fetchEquipment.pending, (state) => {
+          state.loading = true;
+        });
+        builder.addCase(fetchEquipment.fulfilled, (state, action) => {
+          state.equipment=action.payload
+          state.serverErr=null
+          state.loading=false
+        });
+        builder.addCase(fetchEquipment.rejected, (state, action) => {
           state.serverErr = action.payload;
           state.loading = false;
         });

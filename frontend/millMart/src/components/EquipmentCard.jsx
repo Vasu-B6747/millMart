@@ -1,10 +1,23 @@
-import {useState} from 'react';
-import { useSelector } from 'react-redux';
+import {useState,useEffect} from 'react';
+import { useParams } from 'react-router-dom';
+import { useSelector,useDispatch } from 'react-redux';
+import { fetchEquipment } from '../slices/equipmentSlice';
 const EquipmentCard = () => {
-    const {equipmentData}=useSelector((state)=>{
+  const dispatch=useDispatch()
+  const {id}=useParams()
+  const {equipment}=useSelector((state)=>{
         return state.equipments
     })
-    const equipment=equipmentData[0]
+  useEffect(()=>{
+    if(id){
+    dispatch(fetchEquipment(id))
+    }
+  },[id,dispatch])
+  
+    
+    console.log(equipment)
+    if (!equipment) return <div>Loading...</div>;
+    
   const {
     title,
     brand,
@@ -24,6 +37,7 @@ const EquipmentCard = () => {
   } = equipment;
 
 const [mainPhoto, setMainPhoto] = useState(photos[0]);
+if (!equipment) return false
   return (
     <div className="bg-white shadow-md rounded-md p-4 mb-6 flex flex-col md:flex-row mt-8 ml-5 mr-10">
       {/* Image Section */}
