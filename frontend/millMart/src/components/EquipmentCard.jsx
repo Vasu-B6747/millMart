@@ -4,7 +4,7 @@ const EquipmentCard = () => {
     const {equipmentData}=useSelector((state)=>{
         return state.equipments
     })
-    const equipment=equipmentData.results[0]
+    const equipment=equipmentData[0]
   const {
     title,
     brand,

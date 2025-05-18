@@ -47,7 +47,7 @@ function App() {
         <Route path="users/activate" element={<ActivateUser/>} />
         <Route path="equipment" element={<EquipmentForm/>} />
         <Route path="equipments" element={<Equipments/>} />
-        <Route path="equipmentcard" element={<EquipmentCard/>} />
+        <Route path="equipments/equipmentcard/:id" element={<EquipmentCard/>} />
         <Route path="equipments/approve" element={<ApproveEquips/>} />
       </Route>
     </Routes>

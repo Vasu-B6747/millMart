@@ -45,6 +45,7 @@ export default function Equipments(){
               <th className="border px-4 py-2 text-left">Photo</th>
               <th className="border px-4 py-2 text-left">Status</th>
              {userData.role=='seller' &&<th className="border px-4 py-2 text-left">Actions</th>}
+             <th className="border px-4 py-2 text-left">Info</th>
             </tr>
           </thead>
           <tbody>
@@ -99,6 +100,12 @@ export default function Equipments(){
                     ✅ Approve
                   </button>
                 </td>}
+                <td className="border px-4 py-2"> <button
+                    onClick={() => navigate(`/dashboard/equipments/equipmentcard/${ele._id}`)}
+                    className="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs"
+                  >
+                    Info
+                  </button></td>
               </tr>
             ))}
           </tbody>
