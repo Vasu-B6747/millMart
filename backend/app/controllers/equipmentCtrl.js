@@ -210,7 +210,7 @@ equipmentCtrl.show=async(req,res)=>{
     }
     const id=req.params.id
     try{
-        const equipment=await Equipment.findById(id)
+        const equipment=await Equipment.findById(id).populate('seller', 'name email')
         if(!equipment){
             return res.status(404).json({error:'Equipment not found'})
         }
@@ -231,7 +231,7 @@ equipmentCtrl.getBySeller=async(req,res)=>{
     }
     const userId=req.userId
     try{
-        const equipments=await Equipment.find({seller:userId})
+        const equipments=await Equipment.find({seller:userId}).populate('seller','name')
         res.json(equipments)
     }catch(err){
         console.log(err)

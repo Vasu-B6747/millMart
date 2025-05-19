@@ -175,11 +175,14 @@ userCtrl.update=async(req,res)=>{
     const id=req.params.id
     let {name,address,email,password}=req.body
     try{
+        const existData=await User.findById(id)
         const updateData = { name, email,password, address };
         if (password) {
             const salt = await bcryptjs.genSalt()
             const hashed = await bcryptjs.hash(password, salt)
             updateData.password = hashed
+        }else{
+            updateData.password=existData.password
         }
         if (id == req.userId || req.role === 'admin') {
             const user = await User.findByIdAndUpdate(id, updateData, { new: true });
