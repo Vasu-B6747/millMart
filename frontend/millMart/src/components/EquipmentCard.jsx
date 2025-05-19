@@ -1,23 +1,35 @@
-import {useState,useEffect} from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { fetchEquipment } from '../slices/equipmentSlice';
+
 const EquipmentCard = () => {
-  const dispatch=useDispatch()
-  const {id}=useParams()
-  const {equipment}=useSelector((state)=>{
-        return state.equipments
-    })
-  useEffect(()=>{
-    if(id){
-    dispatch(fetchEquipment(id))
+  const dispatch = useDispatch();
+  const navigate=useNavigate()
+  const { id } = useParams();
+
+  const { equipment } = useSelector((state) => state.equipments);
+  const { userData } = useSelector((state) => state.user);
+
+  const [mainPhoto, setMainPhoto] = useState(null);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchEquipment(id));
     }
-  },[id,dispatch])
-  
-    
-    console.log(equipment)
-    if (!equipment) return <div>Loading...</div>;
-    
+  }, [id, dispatch]);
+
+  useEffect(() => {
+    if (!mainPhoto && equipment?.photos?.length > 0) {
+      setMainPhoto(equipment.photos[0]);
+    }
+  }, [equipment, mainPhoto]);
+
+  if (!equipment || !equipment.photos || equipment.photos.length === 0 || !mainPhoto) {
+    return <div>Loading...</div>;
+  }
+
   const {
     title,
     brand,
@@ -34,10 +46,25 @@ const EquipmentCard = () => {
     isSold,
     isApproved,
     createdAt,
+    _id,
   } = equipment;
 
-const [mainPhoto, setMainPhoto] = useState(photos[0]);
-if (!equipment) return false
+  // Placeholder handlers – replace with actual logic
+  const onVerify = (id) => console.log('Verify:', id);
+  const onMarkSold = (id) => console.log('Mark as Sold:', id);
+  const onApprove = (id) => console.log('Approve:', id);
+  const onDelete = (id) => console.log('Delete:', id);
+  const onEdit = (id) =>{
+    navigate(`/dashboard/equipment/${id}`)
+  }
+  const onMessage = (id) => console.log('Message Seller:', id);
+  const onOrder = (id) => console.log('Order Equipment:', id);
+
+  // Determine role and ownership
+  const isAdmin = userData?.role === 'admin';
+  const isSeller = userData?._id === seller?._id;
+  const isBuyer = userData?.role === 'buyer' && !isSeller;
+
   return (
     <div className="bg-white shadow-md rounded-md p-4 mb-6 flex flex-col md:flex-row mt-8 ml-5 mr-10">
       {/* Image Section */}
@@ -47,7 +74,6 @@ if (!equipment) return false
           alt={title}
           className="rounded-md w-full h-64 object-cover mb-2"
         />
-        {/* Thumbnails */}
         <div className="flex gap-2 flex-wrap">
           {photos.map((photo, index) => (
             <img
@@ -77,26 +103,31 @@ if (!equipment) return false
         <p className="text-gray-600"><strong>Seller:</strong> {seller?.name} ({seller?.email})</p>
         <p className="text-sm text-gray-400">Created on: {new Date(createdAt).toLocaleDateString()}</p>
 
-        {/* Action Buttons */}
+        {/* Role-Based Action Buttons */}
         <div className="mt-4 flex flex-wrap gap-3">
-          <button
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded"
-            onClick={() => onVerify(_id)}
-          >
-            ✔ Verify
-          </button>
-          <button
-            className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1 rounded"
-            onClick={() => onMarkSold(_id)}
-          >
-            🚚 Mark as Sold
-          </button>
-          <button
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded"
-            onClick={() => onApprove(_id)}
-          >
-            ✅ Approve
-          </button>
+          {isAdmin && (
+            <>
+              <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded" onClick={() => onDelete(_id)}>🗑 Delete</button>
+              <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded" onClick={() => onVerify(_id)}>✔ Verify</button>
+              <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1 rounded" onClick={() => onMarkSold(_id)}>🚚 Mark as Sold</button>
+              <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded" onClick={() => onApprove(_id)}>✅ Approve</button>
+            </>
+          )}
+
+          {isSeller && (
+            <>
+              <button className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-1 rounded" onClick={() => onEdit(_id)}>✏️ Edit</button>
+              <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1 rounded" onClick={() => onMarkSold(_id)}>🚚 Mark as Sold</button>
+              <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded" onClick={() => onDelete(_id)}>🗑 Delete</button>
+            </>
+          )}
+
+          {isBuyer && (
+            <>
+              <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1 rounded" onClick={() => onMessage(seller?._id)}>💬 Message</button>
+              <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded" onClick={() => onOrder(_id)}>🛒 Order</button>
+            </>
+          )}
         </div>
 
         {/* Status Badges */}
@@ -117,3 +148,4 @@ if (!equipment) return false
 };
 
 export default EquipmentCard;
+

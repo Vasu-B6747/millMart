@@ -1,7 +1,8 @@
 
-import { useState } from "react";
-import { createEquipment } from "../slices/equipmentSlice";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { createEquipment,assigneditId,updateEquipment } from "../slices/equipmentSlice";
+import { useDispatch,useSelector } from "react-redux";
 
 export default function EquipmentForm() {
   const [title, setTitle] = useState("");
@@ -21,7 +22,40 @@ export default function EquipmentForm() {
   const [photos, setPhotos] = useState([]);
   const [clientErrors, setClientErrors] = useState({});
   const [success, setSuccess] = useState(false);
+  const {id}=useParams()
 const dispatch=useDispatch()
+useEffect(()=>{
+  if(id){
+    dispatch(assigneditId(id))
+  }
+
+},[dispatch,id])
+const {editId,equipmentData}=useSelector((state)=>{
+  return state.equipments
+})
+console.log(editId,equipmentData)
+useEffect(() => {
+  if (editId && equipmentData.length) {
+    const equipment = equipmentData.find((ele) => ele._id === editId);
+    if (equipment) {
+      setTitle(equipment.title);
+      setBrand(equipment.brand);
+      setCondition(equipment.condition);
+      setDescription(equipment.description);
+      setEquipmentType(equipment.equipmentType);
+      setModel(equipment.model);
+      setYearManufactured(equipment.yearManufactured);
+      setPrice(equipment.price);
+      setPhotos(equipment.photos || []);
+      setLocation({
+        address: equipment.location?.address || "",
+        latitude: equipment.location?.coordinates?.[1],
+        longitude: equipment.location?.coordinates?.[0],
+      });
+    }
+  }
+}, [editId, equipmentData]);
+
   const validate = () => {
     const errors = {};
     if (!title) errors.title = "Title is required.";
@@ -119,6 +153,32 @@ const resetForm=()=>{
     setPrice('')
     setPhotos([])
 }
+if(editId){
+  const exEquipment=equipmentData.find((e) => e._id === editId)
+  const latitude = parseFloat(location.latitude);
+const longitude = parseFloat(location.longitude);
+
+const equipObj = {
+  ...exEquipment,
+  title,
+  brand,
+  condition,
+  description,
+  equipmentType,
+  model,
+  yearManufactured,
+  location: {
+    type: "Point",
+    coordinates: [longitude, latitude],
+    address: location.address
+  },
+  price,
+  photos,
+};
+
+  dispatch(updateEquipment({equipObj,resetForm}))
+  setSuccess(true)
+}else{
   try {
     await dispatch(createEquipment({formData,resetForm})).unwrap(); // Make sure to use unwrap for error handling
     setSuccess(true);
@@ -126,6 +186,8 @@ const resetForm=()=>{
     console.error("Submit error:", err);
     alert("There was an error submitting the form.");
   }
+}
+  
 };
 
 
@@ -293,8 +355,10 @@ const resetForm=()=>{
   //     </div>
   //   </div>
   // );
-  <div className="max-w-6xl mx-auto mt-10 bg-white p-6 rounded shadow">
-  <h2 className="text-xl font-bold mb-6">Equipment Listing Form</h2>
+  // <div className="max-w-6xl mx-auto mt-10 bg-white p-6 rounded shadow">
+  <div className="max-w-4xl w-full mx-auto bg-white p-6 rounded shadow-md overflow-y-auto max-h-[calc(100vh-120px)]">
+
+  <h2 className="text-xl font-bold mb-6">Equipment {editId?'Update':'Create'} Form</h2>
   {success && <p className="text-green-600 mb-4">Equipment submitted successfully!</p>}
 
   <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -475,7 +539,7 @@ const resetForm=()=>{
         type="submit"
         className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded"
       >
-        Submit
+        {editId?"Edit":"Add"}Equipment
       </button>
     </div>
   </form>

@@ -115,11 +115,59 @@ export const fetchEquipment=createAsyncThunk('equipments/fetchEquipment',async(i
                   errors:err.response.data.errors
                 })
               }
-})            
+}) 
+//deleteEquipment
+export const deleteEquipment=createAsyncThunk('equipments/deleteEquipment',async(id,{rejectWithValue})=>{
+              try{
+                const response=await axios.delete(`equipment/${id}`,{headers:{Authorization:localStorage.getItem('token')}})
+                console.log(response.data)
+                return response.data
+              }catch(err){
+                console.log(err)
+                return  rejectWithValue({
+                  message:err.message,
+                  errors:err.response.data.errors
+                })
+              }
+}) 
+// updateEquipment
+export const updateEquipment=createAsyncThunk('equipments/updateEquipment',async({equipObj,resetForm},{rejectWithValue})=>{
+              try{
+                const response=await axios.put(`equipment/${equipObj._id}`,equipObj,{headers:{Authorization:localStorage.getItem('token')}})
+                console.log(response.data)
+                resetForm()
+                return response.data
+              }catch(err){
+                console.log(err)
+                return  rejectWithValue({
+                  message:err.message,
+                  errors:err.response.data.errors
+                })
+              }
+}) 
+//getsellerEquipment
+export const getsellerEquipment=createAsyncThunk('equipments/getsellerEquipment',async(id,{rejectWithValue})=>{
+              try{
+                const response=await axios.get(`equipment/seller/${id}`,{headers:{Authorization:localStorage.getItem('token')}})
+                console.log(response.data)
+                return response.data
+              }catch(err){
+                console.log(err)
+                return  rejectWithValue({
+                  message:err.message,
+                  errors:err.response.data.errors
+                })
+              }
+}) 
+
 const equipmentSlice=createSlice({
     name:'equipments',
-    initialState:{equipmentData:[],loading:false,serverErr:null,equipment:null},
-    reducers:{},
+    initialState:{equipmentData:[],loading:false,serverErr:null,equipment:null,userEquipments:[],editId:null},
+    reducers:{
+      assigneditId:(state,action)=>{
+        state.editId=action.payload
+      }
+    },
     extraReducers:(builder)=>{
         builder.addCase(createEquipment.pending, (state) => {
           state.loading = true;
@@ -129,6 +177,19 @@ const equipmentSlice=createSlice({
           state.loading = false;
         });
         builder.addCase(createEquipment.rejected, (state, action) => {
+          state.serverErr = action.payload;
+          state.loading = false;
+        });
+        //userEquipments
+         builder.addCase(getsellerEquipment.pending, (state) => {
+          state.loading = true;
+          state.serverErr=null
+        });
+        builder.addCase(getsellerEquipment.fulfilled, (state, action) => {
+          state.userEquipments=action.payload
+          state.loading = false;
+        });
+        builder.addCase(getsellerEquipment.rejected, (state, action) => {
           state.serverErr = action.payload;
           state.loading = false;
         });
@@ -227,6 +288,39 @@ const equipmentSlice=createSlice({
           state.serverErr = action.payload;
           state.loading = false;
         });
+
+        //deleteEquipment
+        builder.addCase(deleteEquipment.fulfilled,(state,action)=>{
+          const index=state.equipmentData.findIndex((ele)=>ele._id==action.payload._id)
+          state.equipmentData.splice(index,1)
+          state.serverErr=null
+          state.loading=false
+        })
+        
+        builder.addCase(deleteEquipment.pending, (state) => {
+          state.loading = true;
+        });
+        
+        builder.addCase(deleteEquipment.rejected,(state,action)=>{
+          state.serverErr=action.payload
+          state.loading = false;
+        }) 
+      //updateEquipment
+       builder.addCase(updateEquipment.pending, (state) => {
+          state.loading = true;
+        });
+        builder.addCase(updateEquipment.fulfilled, (state, action) => {
+          const index=state.equipmentData.findIndex((ele)=>ele._id==action.payload._id)
+          state.equipmentData[index]=action.payload
+          state.serverErr=null
+          state.loading=false
+          state.editId=null
+        });
+        builder.addCase(updateEquipment.rejected, (state, action) => {
+          state.serverErr = action.payload;
+          state.loading = false;
+        });  
     }
 })
+export const {assigneditId}=equipmentSlice.actions
 export default equipmentSlice.reducer

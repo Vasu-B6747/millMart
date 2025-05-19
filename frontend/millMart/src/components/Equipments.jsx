@@ -1,7 +1,9 @@
 import { useSelector,useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
+import { markSold } from "../slices/equipmentSlice"
 export default function Equipments(){
   const navigate=useNavigate()
+  const dispatch=useDispatch()
     const {equipmentData}=useSelector((state)=>{
         return state.equipments
     })
@@ -9,24 +11,26 @@ export default function Equipments(){
       return state.user
     })
     console.log(equipmentData)
-    const handleVerify = (id) => {
+    const handleEdit = (id) => {
     console.log("Verify", id);
     // Dispatch verify action here
   };
 
   const handleMarkSold = (id) => {
     console.log("Mark as Sold", id);
+    dispatch(markSold(id))
     // Dispatch sold action here
   };
 
-  const handleApprove = (id) => {
+  const handleDelete = (id) => {
     console.log("Approve", id);
     // Dispatch approve action here
   };
     return(
         
          <div className="p-6">
-          <div><button onClick={()=>navigate('/dashboard/equipments/approve')}>Approve/verify Equips</button></div>
+         {userData.role=='admin'&& <div><button onClick={()=>navigate('/dashboard/equipments/approve')}>Approve/verify Equips</button></div>}
+         {userData.role=='seller'&& <div><button onClick={()=>navigate('/dashboard/equipments/mylist')}>MyEquipments</button></div>}
       <h2 className="text-2xl font-semibold mb-4 text-indigo-700">List of Equipments</h2>
 
       <div className="overflow-x-auto">
@@ -82,10 +86,10 @@ export default function Equipments(){
                 </td>
                {userData.role=='seller'&& <td className="border px-4 py-2 space-x-1">
                   <button
-                    onClick={() => handleVerify(ele._id)}
+                    onClick={() => handleEdit(ele._id)}
                     className="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs"
                   >
-                    ✔ Verify
+                    Edit
                   </button>
                   <button
                     onClick={() => handleMarkSold(ele._id)}
@@ -94,10 +98,10 @@ export default function Equipments(){
                     🚚 Sold
                   </button>
                   <button
-                    onClick={() => handleApprove(ele._id)}
+                    onClick={() => handleDelete(ele._id)}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs"
                   >
-                    ✅ Approve
+                    Delete
                   </button>
                 </td>}
                 <td className="border px-4 py-2"> <button

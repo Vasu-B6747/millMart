@@ -160,7 +160,7 @@ console.log(currentUser)
           </div>
 
           
-        <div>
+        
           <button
             type="submit"
             className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"
@@ -168,15 +168,16 @@ console.log(currentUser)
           >
             Update
           </button>
-          <button
-            type="submit"
+          
+          
+        </form>
+        <button
+            
             className="w-full bg-orange-600 text-white py-2 rounded hover:bg-orange-700 transition mt-5"
             onClick={()=>navigate('/dashboard/account')}
           >
             Cancel
           </button>
-          </div>
-        </form>
       </div>
     </div>
   );

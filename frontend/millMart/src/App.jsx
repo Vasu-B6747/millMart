@@ -17,6 +17,7 @@ import EquipmentForm from './components/EquipmentForm';
 import Equipments from './components/Equipments';
 import EquipmentCard from './components/EquipmentCard';
 import ApproveEquips from './components/ApproveEquips';
+import MyEquipments from './components/MyEquipments';
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.user);
@@ -49,6 +50,8 @@ function App() {
         <Route path="equipments" element={<Equipments/>} />
         <Route path="equipments/equipmentcard/:id" element={<EquipmentCard/>} />
         <Route path="equipments/approve" element={<ApproveEquips/>} />
+        <Route path="mylist" element={<MyEquipments/>} />
+        <Route path="equipment/:id" element={<EquipmentForm/>} />
       </Route>
     </Routes>
   );
