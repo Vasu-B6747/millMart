@@ -1,4 +1,6 @@
 import express from 'express'
+import { createServer } from 'http'
+import { Server } from 'socket.io'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import { checkSchema } from 'express-validator'
@@ -30,6 +32,35 @@ app.use(cors({
 }))
 dotenv.config()
 configureDB()
+
+//1
+const httpServer = createServer(app)
+const io = new Server(httpServer, {
+  cors: {
+    origin:'*'     //'http://localhost:5173',
+    // methods: ['GET', 'POST']
+  }
+})
+//2
+app.set('io', io)
+//3
+io.on('connection', (socket) => {
+  console.log('Socket connected: ', socket.id)
+  socket.on('join', (userId) => {
+    socket.join(userId)
+    console.log(`User ${userId} joined their room`)
+  })
+  socket.on('sendMessage', (msg) => {
+    const receiverId = msg.receiver?._id || msg.receiver
+    if (receiverId) {
+      io.to(receiverId).emit('newMessage', msg)
+    }
+  })
+
+  socket.on('disconnect', () => {
+    console.log('Socket disconnected:', socket.id)
+  })
+})
 
 //user
 app.post('/register', upload.single('profilePic'),checkSchema(registerValidationSchema),userCtrl.register)
@@ -87,6 +118,6 @@ app.patch('/payment/refund/:id',authenticateUser,checkSchema(idValidationSchema)
 
 
 
-app.listen(port,()=>{
+httpServer.listen(port,()=>{
     console.log('sever is running on port ',port)
 })

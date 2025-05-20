@@ -12,6 +12,9 @@ messageCtrl.sendMessage=async(req,res)=>{
     const body=req.body
     try{
         const message=await Message.create(body)
+         const io = req.app.get('io')
+        //  io.to(message.receiver.toString()).emit('newMessage', message)
+        req.io.to(req.body.receiver).emit('newMessage', message)
         res.status(201).json(message)
     }catch(err){
         console.log(err)
