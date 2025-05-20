@@ -1,3 +1,5 @@
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector,useDispatch } from 'react-redux';
 import { useEffect } from 'react';
@@ -18,6 +20,7 @@ import Equipments from './components/Equipments';
 import EquipmentCard from './components/EquipmentCard';
 import ApproveEquips from './components/ApproveEquips';
 import MyEquipments from './components/MyEquipments';
+import Chat from './components/Chat';
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.user);
@@ -31,6 +34,7 @@ function App() {
           },[dispatch])
 
   return (
+    <>
     <Routes>
       {/* Public Routes */}
       <Route path="/" element={isLoggedIn ? <Navigate to="/dashboard" /> : <LandingPage />} />
@@ -52,8 +56,11 @@ function App() {
         <Route path="equipments/approve" element={<ApproveEquips/>} />
         <Route path="mylist" element={<MyEquipments/>} />
         <Route path="equipment/:id" element={<EquipmentForm/>} />
+        <Route path="chat/:id" element={<Chat/>} />
       </Route>
     </Routes>
+     <ToastContainer position="top-right" autoClose={3000} />
+    </>
   );
 }
 

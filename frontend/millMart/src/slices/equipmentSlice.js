@@ -166,6 +166,9 @@ const equipmentSlice=createSlice({
     reducers:{
       assigneditId:(state,action)=>{
         state.editId=action.payload
+      },
+      removeEditId:(state,action)=>{
+        state.editId=null
       }
     },
     extraReducers:(builder)=>{
@@ -322,5 +325,5 @@ const equipmentSlice=createSlice({
         });  
     }
 })
-export const {assigneditId}=equipmentSlice.actions
+export const {assigneditId,removeEditId}=equipmentSlice.actions
 export default equipmentSlice.reducer

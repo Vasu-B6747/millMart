@@ -18,10 +18,19 @@ export default function MyEquipments(){
     })
     console.log(userEquipments)
     return(
-        <div className="p-6">
+      <div className="p-6">
          
-      <h2 className="text-2xl font-semibold mb-4 text-indigo-700">List of MyEquipments</h2>
+      
+      <div className="flex justify-between items-center mb-4">
+  <h2 className="text-2xl font-semibold text-indigo-700">
+    List of MyEquipments
+  </h2>
+  <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={()=>navigate('/dashboard/equipment')}>
+    Add Equipment
+  </button>
+</div>
 
+      
       <div className="overflow-x-auto">
         <table className="min-w-full table-auto border border-gray-300 text-sm">
           <thead>

@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { createEquipment,assigneditId,updateEquipment } from "../slices/equipmentSlice";
+import { useParams,useNavigate } from "react-router-dom";
+import { createEquipment,assigneditId,updateEquipment, removeEditId } from "../slices/equipmentSlice";
 import { useDispatch,useSelector } from "react-redux";
 
 export default function EquipmentForm() {
@@ -24,6 +24,7 @@ export default function EquipmentForm() {
   const [success, setSuccess] = useState(false);
   const {id}=useParams()
 const dispatch=useDispatch()
+const navigate=useNavigate()
 useEffect(()=>{
   if(id){
     dispatch(assigneditId(id))
@@ -72,7 +73,9 @@ useEffect(() => {
   };
 
   const getCoordinatesFromAddress = async (address) => {
+    console.log(import.meta.env.VITE_OPENCAGE_API_KEY)
      const apiKey = import.meta.env.VITE_OPENCAGE_API_KEY;
+     console.log(apiKey)
 ; // Your OpenCage API key
     const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(address)}&key=${apiKey}`;
     console.log("Geocoding URL:", url);
@@ -154,9 +157,9 @@ const resetForm=()=>{
     setPhotos([])
 }
 if(editId){
-  const exEquipment=equipmentData.find((e) => e._id === editId)
+  const exEquipment=equipmentData.find((ele) => ele._id === editId)
   const latitude = parseFloat(location.latitude);
-const longitude = parseFloat(location.longitude);
+  const longitude = parseFloat(location.longitude);
 
 const equipObj = {
   ...exEquipment,
@@ -189,7 +192,14 @@ const equipObj = {
 }
   
 };
-
+const handleBack = () => {
+    if (editId) {
+      dispatch(removeEditId());
+      navigate(`/dashboard/equipments/equipmentcard/${editId}`);
+    } else {
+      navigate('/dashboard/mylist');
+    }
+  };
 
   return (
   //   <div className="flex justify-center items-center min-h-screen bg-gray-100 mt-6 ">
@@ -356,8 +366,14 @@ const equipObj = {
   //   </div>
   // );
   // <div className="max-w-6xl mx-auto mt-10 bg-white p-6 rounded shadow">
-  <div className="max-w-4xl w-full mx-auto bg-white p-6 rounded shadow-md overflow-y-auto max-h-[calc(100vh-120px)]">
-
+  <div className="max-w-4xl w-full mx-auto bg-white p-6 rounded shadow-md overflow-y-auto max-h-[calc(100vh-120px)] mt-5">
+    <button
+  onClick={handleBack}
+  className="bg-red-500 hover:bg-red-700 text-white font-medium py-1 px-2 rounded flex items-center space-x-2"
+>
+  <span>&larr;</span>
+  <span>Back</span>
+</button>
   <h2 className="text-xl font-bold mb-6">Equipment {editId?'Update':'Create'} Form</h2>
   {success && <p className="text-green-600 mb-4">Equipment submitted successfully!</p>}
 

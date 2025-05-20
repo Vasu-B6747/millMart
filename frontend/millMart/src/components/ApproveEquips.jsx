@@ -7,12 +7,14 @@ import {
   unverifyEquipment,
   fetchEquipments,
 } from "../slices/equipmentSlice"
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function ApproveEquips() {
   const dispatch = useDispatch();
+  const navigate=useNavigate()
   const { equipmentData, loading } = useSelector((state) => state.equipments);
   const [view, setView] = useState("approved"); // Options: approved, requested, verified, unverified
 
@@ -83,6 +85,13 @@ export default function ApproveEquips() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6 overflow-x-auto">
+       <button
+  onClick={()=>navigate('/dashboard/equipments')}
+  className="bg-red-500 hover:bg-red-700 text-white font-medium py-1 px-2 rounded flex items-center space-x-2 mb-8"
+>
+  <span>&larr;</span>
+  <span>Back</span>
+</button>
       <ToastContainer position="top-right" autoClose={3000} />
       <div className="max-w-7xl mx-auto bg-white shadow-md rounded-lg p-6">
         <div className="flex justify-center gap-4 mb-6 flex-wrap">
