@@ -136,18 +136,20 @@ const onEdit = (id) => {
     }else if(userData.role=='seller'){
       navigate('/dashboard/mylist')
     }else{
-      navigate('/')
+      navigate('/dashboard/home')
     }
   }
 
   return (
-    <div className="bg-white shadow-md rounded-md p-4 mb-6 flex flex-col md:flex-row mt-8 ml-5 mr-10">
-      
-    <div> <button className="bg-red-500 hover:bg-red-700 text-white font-medium py-1 px-2 rounded flex items-center space-x-2" onClick={handleBack}>
+    <div>
+      <div> <button className="bg-red-500 hover:bg-red-700 text-white font-medium py-1 px-2 rounded flex items-center space-x-2 mt-2 ml-2" onClick={handleBack}>
             <span>&larr;</span>
             <span>Back</span>
           </button>
     </div>
+    <div className="bg-white shadow-md rounded-md p-4 mb-6 flex flex-col md:flex-row mt-8 ml-5 mr-10">
+      
+    
       <div className="md:w-1/3 mb-4 md:mb-0">
         <img
           src={mainPhoto}
@@ -275,6 +277,7 @@ const onEdit = (id) => {
           </span>
         </div>
       </div>
+    </div>
     </div>
   );
 };

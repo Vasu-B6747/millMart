@@ -65,10 +65,10 @@ export default function Topbar() {
   if(!userData) return false
 
   return (
-    <header className="bg-white shadow px-4 py-3 flex justify-between items-center">
+    <header className="bg-gray-700 shadow px-4 py-3 flex justify-between items-center">
       <div>
-        <h1 className="text-xl font-bold text-gray-700">Welcome to MillMart</h1>
-        <h6 className="text-[10px] font-bold text-gray-700">Buy/sell & Upgrade your Mill</h6>
+        <h1 className="text-xl font-bold text-white">Welcome to MillMart</h1>
+        <h6 className="text-[10px] font-bold text-white">Buy/sell & Upgrade your Mill</h6>
       </div>
 
       <div className="flex items-center space-x-4 relative">

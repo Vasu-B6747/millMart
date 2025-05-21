@@ -9,11 +9,13 @@ const Chat = () => {   //{ userId, receiverId }
     const {userData}=useSelector((state)=>{
         return state.user
     })
-    const id=useParams()
+    const { id } = useParams(); // This will be the buyerId if seller is logged in
+    console.log(id)
   const [message, setMessage] = useState('');
   const [chat, setChat] = useState([]);
     const userId=userData._id
-    const receiverId=id
+    const receiverId=id || '6821c6ea475a5a1a5d0d6f90'
+    console.log(receiverId)
   useEffect(() => {
     // Join your room
     socket.emit('join', userId);

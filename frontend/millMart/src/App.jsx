@@ -21,6 +21,9 @@ import EquipmentCard from './components/EquipmentCard';
 import ApproveEquips from './components/ApproveEquips';
 import MyEquipments from './components/MyEquipments';
 import Chat from './components/Chat';
+import EquipmentSearch from './components/Search';
+import NearbyEquipmentSearch from './components/Nearby';
+import Home from './components/Home';
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.user);
@@ -57,6 +60,11 @@ function App() {
         <Route path="mylist" element={<MyEquipments/>} />
         <Route path="equipment/:id" element={<EquipmentForm/>} />
         <Route path="chat/:id" element={<Chat/>} />
+        <Route path="chat" element={<Chat/>} />
+        <Route path="search" element={<EquipmentSearch/>} />
+        <Route path="location" element={<NearbyEquipmentSearch/>} />
+        <Route path='home' element={<Home/>}/>
+        <Route path="home/equipmentcard/:id" element={<EquipmentCard/>} />
       </Route>
     </Routes>
      <ToastContainer position="top-right" autoClose={3000} />
