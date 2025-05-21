@@ -83,10 +83,10 @@ app.delete('/equipment/:id',authenticateUser,checkSchema(idValidationSchema),equ
 app.put('/equipment/:id',authenticateUser,checkSchema(idValidationSchema),checkSchema(equipmentValidationSchema),equipmentCtrl.update)
 app.get('/equipment/:id',checkSchema(idValidationSchema),equipmentCtrl.show)
 app.get('/equipment/seller/:id',authenticateUser,checkSchema(idValidationSchema),equipmentCtrl.getBySeller)
-app.get('/equipment/search',equipmentCtrl.search)
+app.get('/equipments/search',equipmentCtrl.search)
 app.put('/equipment/approve/:id',authenticateUser,authorisedUser(['admin']),equipmentCtrl.approve)
 app.put('/equipment/verify/:id',authenticateUser,authorisedUser(['admin']),equipmentCtrl.verify)
-app.get('/equipment/nearby',equipmentCtrl.getNearby)
+app.get('/equipment/nearby/address',equipmentCtrl.getNearby)
 app.patch('/equipment/sold/:id',authenticateUser,checkSchema(idValidationSchema),equipmentCtrl.markAsSold)
 
 //message

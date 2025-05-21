@@ -239,31 +239,31 @@ equipmentCtrl.getBySeller=async(req,res)=>{
     }
 }
 //7.search or filter 
-equipmentCtrl.search = async (req, res) => {
-    const { type, condition, minPrice, maxPrice } = req.query;
+// equipmentCtrl.search = async (req, res) => {
+//     const { type, condition, minPrice, maxPrice } = req.query;
 
-    let query = {};
-    if (type) query.equipmentType = type;
-    if (condition) query.condition = condition;
-    if (minPrice || maxPrice) {
-        query.price = {};
-        if (minPrice) query.price.$gte = Number(minPrice);
-        if (maxPrice) query.price.$lte = Number(maxPrice);
-    }
+//     let query = {};
+//     if (type) query.equipmentType = type;
+//     if (condition) query.condition = condition;
+//     if (minPrice || maxPrice) {
+//         query.price = {};
+//         if (minPrice) query.price.$gte = Number(minPrice);
+//         if (maxPrice) query.price.$lte = Number(maxPrice);
+//     }
 
-    try {
-        const result = await paginateQuery(Equipment, query, {
-            page: req.query.page,
-            limit: req.query.limit,
-            sort: { createdAt: -1 }
-        });
+//     try {
+//         const result = await paginateQuery(Equipment, query, {
+//             page: req.query.page,
+//             limit: req.query.limit,
+//             sort: { createdAt: -1 }
+//         });
 
-        res.json(result);
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ error: 'Something went wrong' });
-    }
-};
+//         res.json(result);
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).json({ error: 'Something went wrong' });
+//     }
+// };
 
 // equipmentCtrl.search = async (req, res) => {
 //     const { type, condition, minPrice, maxPrice } = req.query;
@@ -299,6 +299,7 @@ equipmentCtrl.search = async (req, res) => {
 
     try {
         // Just use find() without populate
+        console.log(filter)
         const queryBuilder = Equipment.find(filter);
 
         const result = await paginateQuery(queryBuilder, {
@@ -381,12 +382,13 @@ equipmentCtrl.verify = async (req, res) => {
 //10.nearby
 equipmentCtrl.getNearby = async (req, res) => {
     const { lng, lat, distance } = req.query;
+    console.log(lng,lat)
     try {
         const equipments = await Equipment.find({
             'location.coordinates': {
                 $near: {
-                    $geometry: { type: 'Point', coordinates: [parseFloat(lng), parseFloat(lat)] },
-                    $maxDistance: parseFloat(distance)
+                    $geometry: { type: 'Point', coordinates: [parseFloat(lng), parseFloat(lat)] }
+                    // $maxDistance: parseFloat(distance)
                 }
             }
         });
