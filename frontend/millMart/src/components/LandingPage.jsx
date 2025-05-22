@@ -15,6 +15,7 @@ export default function LandingPage() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [previewImages, setPreviewImages] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
+  const [search,setSearch]=useState('')
   const itemsPerPage = 6;
 
   const handleThumbnailClick = (index, imageUrl) => {
@@ -29,32 +30,57 @@ export default function LandingPage() {
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
-
+const filterEquip=currentItems.filter((ele)=>ele.title.toLowerCase().includes(search.toLowerCase()))
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Top Navigation Bar */}
-      <div className="flex justify-between items-center p-4 bg-white shadow-md">
+      <div className="flex justify-between items-center p-4 bg-gray-700 shadow-md">
+        <div>
         <h1 className="text-xl font-bold text-indigo-600">Millmart</h1>
+        <h6 className="text-[10px] font-bold text-red-400">Buy/sell & Upgrade your Mill</h6>
+        </div>
+        {/* <div>
+           <input type='text' value={search} onChange={e=>setSearch(e.target.value)}/>
+        </div> */}
+        <div className="relative w-full max-w-md">
+  {/* <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+    <svg
+      className="h-5 w-5 text-gray-400"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M21 21l-4.35-4.35M16.65 16.65A7.5 7.5 0 1117 10a7.5 7.5 0 01-.35 6.65z"
+      />
+    </svg>
+  </span> */}
+ 
+  <input
+    type="text"
+    value={search}
+    onChange={e => setSearch(e.target.value)}
+    placeholder="Search..."
+    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 "
+  />
+</div>
+
         <div>
           <Link to="/login" className="text-indigo-600 mx-2 hover:underline">Login</Link>
           <Link to="/register" className="text-indigo-600 mx-2 hover:underline">Register</Link>
         </div>
       </div>
 
-      {/* Equipment List Placeholder */}
-      {/* <div className="p-6">
-        <h2 className="text-2xl font-semibold mb-4">Available Equipment</h2>
-        <ul className="space-y-2">
-          <li className="bg-white p-4 rounded shadow">Excavator - Model X123</li>
-          <li className="bg-white p-4 rounded shadow">Bulldozer - Cat D6</li>
-          <li className="bg-white p-4 rounded shadow">Crane - Liebherr LTM</li>
-        </ul>
-      </div> */}
+      
       <div className="max-w-7xl mx-auto px-4 py-8">
       <h2 className="text-2xl font-bold mb-6">List of Equipments</h2>
-
+     
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {currentItems.map((item, index) => {
+        {filterEquip.map((item, index) => {
           const mainImage = previewImages[index] || item.photos?.[0];
 
           return (
