@@ -5,7 +5,7 @@ const paymentSchema = new Schema({
     equipmentId: { type:Schema.Types.ObjectId, ref: 'Equipment'},
     amount:Number,
     paymentStatus: { type: String, enum: ['pending', 'completed', 'refunded'], default: 'pending' },
-    paymentMethod: { type: String, enum: ['razorpay', 'stripe', 'bank_transfer'], default: 'bank_transfer' },
+    paymentMethod: { type: String, enum: ['razorpay', 'stripe', 'bank_transfer'], default: 'razorpay' },
     razorpay_order_id: { type: String },
     razorpay_payment_id: { type: String },
     razorpay_signature: { type: String }
