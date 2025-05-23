@@ -1,12 +1,23 @@
-import { Link } from 'react-router-dom';
-import { useSelector } from "react-redux";
-import { useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
 
-import ReactPaginate from "react-paginate";
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useState } from 'react';
+import ReactPaginate from 'react-paginate';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import Gallerypage from './pages/Gallerypage';
+import Contactpage from './pages/Contactpage'
+import Footerpage from './pages/Footerpage';
+import 'swiper/css';
+import 'swiper/css/pagination';
+
+const priceRanges = [
+  { label: 'All Prices', min: 0, max: Infinity },
+  { label: '₹10,000 - ₹50,000', min: 10000, max: 50000 },
+  { label: '₹50,000 - ₹100,000', min: 50000, max: 100000 },
+  { label: '₹100,000 - ₹200,000', min: 100000, max: 200000 },
+  { label: '₹200,000 - ₹500,000', min: 200000, max: 500000 },
+  { label: '₹500,000 - ₹1,000,000', min: 500000, max: 1000000 },
+];
 
 export default function LandingPage() {
   const { equipmentData } = useSelector((state) => state.equipments);
@@ -15,214 +26,189 @@ export default function LandingPage() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [previewImages, setPreviewImages] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
-  const [search,setSearch]=useState('')
-  const itemsPerPage = 6;
+  const [search, setSearch] = useState('');
+  const [location, setLocation] = useState('');
+  const [selectedRange, setSelectedRange] = useState(priceRanges[0]);
+  const itemsPerPage = 12;
 
-  const handleThumbnailClick = (index, imageUrl) => {
-    setPreviewImages((prev) => ({ ...prev, [index]: imageUrl }));
+  const handlePageChange = ({ selected }) => setCurrentPage(selected);
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+    setCurrentPage(0);
+  };
+  const handleRangeChange = (e) => {
+    const range = priceRanges.find((r) => r.label === e.target.value);
+    setSelectedRange(range);
+    setCurrentPage(0);
   };
 
-  const handlePageChange = ({ selected }) => {
-    setCurrentPage(selected);
-  };
+  const filteredItems = results.filter((item) => {
+    const matchesText =
+      item.title.toLowerCase().includes(search.toLowerCase()) ||
+      item.equipmentType.toLowerCase().includes(search.toLowerCase()) ||
+      item.condition.toLowerCase().includes(search.toLowerCase());
 
-  const currentItems = results.slice(
+    const matchesLocation =
+      location === '' || item.location?.address?.toLowerCase().includes(location.toLowerCase());
+
+    const matchesPrice =
+      item.price >= selectedRange.min && item.price <= selectedRange.max;
+
+    return matchesText && matchesLocation && matchesPrice;
+  });
+
+  const currentItems = filteredItems.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
-const filterEquip=currentItems.filter((ele)=>ele.title.toLowerCase().includes(search.toLowerCase()))
+
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Top Navigation Bar */}
-      <div className="flex justify-between items-center p-4 bg-gray-700 shadow-md">
+    
+    <div className="h-screen flex flex-col overflow-hidden">
+      {/* Fixed Top Bar */}
+      <div className="bg-gray-700 text-white px-6 py-4 flex flex-wrap justify-between items-center gap-2 flex-shrink-0">
         <div>
-        <h1 className="text-xl font-bold text-indigo-600">Millmart</h1>
-        <h6 className="text-[10px] font-bold text-red-400">Buy/sell & Upgrade your Mill</h6>
+          {/* <img className="h-20 rounded w-full object-cover object-center mb-6" src="src/assets/download (2).png" alt="content"/> */}
+          <h1 className="text-[2rem] font-bold text-white">Millmart</h1>
+          <h6 className="text-[1rem] font-bold text-red-300">Buy/Sell & Upgrade Your Mill</h6>
         </div>
-        {/* <div>
-           <input type='text' value={search} onChange={e=>setSearch(e.target.value)}/>
-        </div> */}
-        <div className="relative w-full max-w-md">
-  {/* <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-    <svg
-      className="h-5 w-5 text-gray-400"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M21 21l-4.35-4.35M16.65 16.65A7.5 7.5 0 1117 10a7.5 7.5 0 01-.35 6.65z"
-      />
-    </svg>
-  </span> */}
- 
-  <input
-    type="text"
-    value={search}
-    onChange={e => setSearch(e.target.value)}
-    placeholder="Search..."
-    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 "
-  />
+        <input
+          className="w-40 md:w-64 px-3 py-1 rounded shadow text-black"
+          type="text"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          placeholder="Location"
+        />
+        <input
+          type="text"
+          value={search}
+          onChange={handleSearchChange}
+          placeholder="Search name, type, condition..."
+          className="w-40 md:w-64 px-3 py-1 rounded shadow text-black"
+        />
+        <select
+          value={selectedRange.label}
+          onChange={handleRangeChange}
+          className="px-3 py-1 border rounded shadow text-black"
+        >
+          {priceRanges.map((range) => (
+            <option key={range.label} value={range.label}>
+              {range.label}
+            </option>
+          ))}
+        </select>
+       
+        <div className="flex gap-3">
+  <Link
+    to="/login"
+    className="px-4 py-1.5 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition duration-200 text-sm font-medium"
+  >
+    Login
+  </Link>
+  <Link
+    to="/register"
+    className="px-4 py-1.5 bg-green-500 text-white rounded hover:bg-green-600 transition duration-200 text-sm font-medium"
+  >
+    Register
+  </Link>
 </div>
 
-        <div>
-          <Link to="/login" className="text-indigo-600 mx-2 hover:underline">Login</Link>
-          <Link to="/register" className="text-indigo-600 mx-2 hover:underline">Register</Link>
+      </div>
+
+      {/* Scrollable Equipment Section */}
+      <div className="flex-1 overflow-auto p-4 bg-gray-100 w-full">
+      <div className="flex-1 overflow-auto p-4 bg-gray-100 w-full">
+        <div className="max-w-screen-2xl mx-auto">
+          {/* <h2 className="text-2xl font-bold mb-6">List of Equipments</h2> */}
+
+          {currentItems.length === 0 ? (
+            <p className="text-center text-gray-500">No equipments found.</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+              {currentItems.map((item, index) => {
+                const mainImage = previewImages[index] || item.photos?.[0];
+                return (
+                  <div
+                    key={index}
+                    className="bg-white rounded shadow p-4 border cursor-pointer hover:shadow-md transition"
+                    onClick={() => setSelectedItem(item)}
+                  >
+                    <img
+                      src={mainImage}
+                      alt={item.title}
+                      className="w-full h-48 object-cover rounded mb-3"
+                    />
+                    <h3 className="text-lg font-semibold">{item.title}</h3>
+                    <p className="text-sm text-gray-600 capitalize">{item.equipmentType} ({item.condition})</p>
+                    <p className="text-sm font-medium">{item.brand}</p>
+                    <p className="text-sm">₹{item.price.toLocaleString()} ({item.yearManufactured})</p>
+                    <p className="text-xs text-gray-500">📍 {item.location?.address}</p>
+                    <div className="flex gap-2 mt-2">
+                      {item.isVerified && (
+                        <span className="bg-green-200 text-green-800 text-xs px-2 py-1 rounded-full">Verified</span>
+                      )}
+                      {item.isSold && (
+                        <span className="bg-red-200 text-red-800 text-xs px-2 py-1 rounded-full">Sold</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Pagination */}
+          {filteredItems.length > itemsPerPage && (
+            <ReactPaginate
+              pageCount={Math.ceil(filteredItems.length / itemsPerPage)}
+              onPageChange={handlePageChange}
+              containerClassName="flex justify-center mt-6"
+              pageClassName="mx-1 px-3 py-1 border rounded"
+              activeClassName="bg-blue-600 text-white"
+              previousLabel="Previous"
+              nextLabel="Next"
+            />
+          )}
         </div>
       </div>
-
-      
-      <div className="max-w-7xl mx-auto px-4 py-8">
-      <h2 className="text-2xl font-bold mb-6">List of Equipments</h2>
-     
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filterEquip.map((item, index) => {
-          const mainImage = previewImages[index] || item.photos?.[0];
-
-          return (
-            <div
-              key={index}
-              className="bg-white rounded shadow p-4 border cursor-pointer hover:shadow-md transition"
-              onClick={() => setSelectedItem(item)}
-            >
-              <img
-                src={mainImage}
-                alt={item.title}
-                className="w-full h-48 object-cover rounded mb-3"
-              />
-              <h3 className="text-lg font-semibold">{item.title}</h3>
-              <p className="text-sm text-gray-600 mb-1 capitalize">
-                {item.equipmentType} ({item.condition})
-              </p>
-              <p className="text-sm text-gray-800 font-medium">{item.brand}</p>
-              <p className="text-sm text-gray-600 mb-1">
-                {item.yearManufactured} – ₹{item.price.toLocaleString()}
-              </p>
-              <p className="text-xs text-gray-500 mb-2">
-                📍 {item.location?.address}
-              </p>
-
-              {/* Badges */}
-              <div className="flex gap-2 mb-2">
-                {item.isVerified && (
-                  <span className="bg-green-200 text-green-800 text-xs px-2 py-1 rounded-full">
-                    Verified
-                  </span>
-                )}
-                {item.isSold && (
-                  <span className="bg-red-200 text-red-800 text-xs px-2 py-1 rounded-full">
-                    Sold
-                  </span>
-                )}
-              </div>
-
-              {/* Thumbnails */}
-              <div className="flex flex-wrap gap-2 mt-2">
-                {item.photos?.map((photo, i) => (
-                  <img
-                    key={i}
-                    src={photo}
-                    alt={`Thumbnail ${i}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleThumbnailClick(index, photo);
-                    }}
-                    className="w-12 h-12 object-cover rounded cursor-pointer border hover:border-indigo-500"
-                  />
-                ))}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Pagination */}
-      <ReactPaginate
-        pageCount={Math.ceil(results.length / itemsPerPage)}
-        pageRangeDisplayed={5}
-        marginPagesDisplayed={2}
-        onPageChange={handlePageChange}
-        containerClassName="flex justify-center mt-6"
-        pageClassName="px-3 py-1 border border-gray-300 rounded-md mx-1"
-        pageLinkClassName="text-gray-700"
-        activeClassName="bg-blue-600 text-white"
-        previousLabel="Previous"
-        nextLabel="Next"
-      />
 
       {/* Modal */}
       {selectedItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 max-w-2xl w-full rounded shadow-lg relative overflow-y-auto max-h-[90vh]">
+        <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
+          <div className="bg-white rounded-lg p-6 w-full max-w-3xl relative">
             <button
-              className="absolute top-2 right-2 text-gray-700 hover:text-red-600 text-xl"
+              className="absolute top-2 right-2 text-gray-700 hover:text-red-600 text-2xl"
               onClick={() => setSelectedItem(null)}
             >
               &times;
             </button>
-
-            <h3 className="text-xl font-bold mb-2">{selectedItem.title}</h3>
-            <p className="text-sm text-gray-600 mb-2">
-              {selectedItem.equipmentType} ({selectedItem.condition}) —{" "}
-              {selectedItem.brand}
-            </p>
-            <p className="text-sm text-gray-700 mb-3">{selectedItem.description}</p>
-
-            <p className="text-sm font-medium mb-1">
-              Year: {selectedItem.yearManufactured} — ₹
-              {selectedItem.price.toLocaleString()}
-            </p>
-            <p className="text-sm text-gray-500 mb-4">
-              📍 {selectedItem.location?.address}
-            </p>
-            {/* {item.isVerified && (
-  <span className="bg-green-200 text-green-800 text-xs px-2 py-1 rounded-full">
-    Verified
-  </span>
-
-)}
- {item.isSold && (
-  <span className="bg-red-200 text-red-800 text-xs px-2 py-1 rounded-full">
-    Sold
-  </span>
-)} */}
-            {/* Swiper Carousel */}
-            {/* <Swiper spaceBetween={10} slidesPerView={1}>
+            <h3 className="text-xl font-bold">{selectedItem.title}</h3>
+            <p className="text-sm mb-2">{selectedItem.equipmentType} ({selectedItem.condition}) — {selectedItem.brand}</p>
+            <Swiper spaceBetween={10} slidesPerView={1} pagination={{ clickable: true }}>
               {selectedItem.photos?.map((photo, i) => (
                 <SwiperSlide key={i}>
-                  <img
-                    src={photo}
-                    alt={`Modal Photo ${i}`}
-                    className="w-full h-60 object-cover rounded"
-                  />
+                  <img src={photo} alt={`Slide ${i}`} className="w-full h-64 object-cover rounded" />
                 </SwiperSlide>
               ))}
-            </Swiper> */}
-            <Swiper
-  spaceBetween={10}
-  slidesPerView={1}
-  pagination={{ clickable: true }}
->
-  {selectedItem.photos?.map((photo, i) => (
-    <SwiperSlide key={i}>
-      <img
-        src={photo}
-        alt={`Slide ${i}`}
-        className="w-full h-60 object-cover rounded"
-      />
-    </SwiperSlide>
-  ))}
-</Swiper>
-
+            </Swiper>
+            <p className="mt-2 text-sm">{selectedItem.description}</p>
+            <p className="mt-1 text-sm">📍 {selectedItem.location?.address}</p>
+            <p className="text-md font-semibold mt-2">₹{selectedItem.price.toLocaleString()}</p>
           </div>
+           
         </div>
       )}
-    </div>
+      <div>
+     <Gallerypage/>
+     <Contactpage/>
+     <Footerpage/>
+    </div>  
+      </div>
+      
     </div>
     
   );
 }
+
+
+

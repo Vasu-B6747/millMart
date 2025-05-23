@@ -195,7 +195,7 @@ const equipObj = {
 const handleBack = () => {
     if (editId) {
       dispatch(removeEditId());
-      navigate(`/dashboard/equipments/equipmentcard/${editId}`);
+      navigate(`/equipments/equipmentcard/${editId}`);
     } else {
       navigate('/dashboard/mylist');
     }
@@ -366,14 +366,16 @@ const handleBack = () => {
   //   </div>
   // );
   // <div className="max-w-6xl mx-auto mt-10 bg-white p-6 rounded shadow">
-  <div className="max-w-4xl w-full mx-auto bg-white p-6 rounded shadow-md overflow-y-auto max-h-[calc(100vh-120px)] mt-5">
+  <div>
     <button
   onClick={handleBack}
-  className="bg-red-500 hover:bg-red-700 text-white font-medium py-1 px-2 rounded flex items-center space-x-2"
+  className="bg-red-500 hover:bg-red-700 text-white font-medium py-1 px-2 rounded flex items-center space-x-2 mt-3 ml-4"
 >
   <span>&larr;</span>
   <span>Back</span>
 </button>
+  <div className=" w-[90%] mx-auto bg-white p-6 rounded shadow-md overflow-y-auto max-h-[calc(100vh-120px)] mt-5">
+    
   <h2 className="text-xl font-bold mb-6">Equipment {editId?'Update':'Create'} Form</h2>
   {success && <p className="text-green-600 mb-4">Equipment submitted successfully!</p>}
 
@@ -484,7 +486,7 @@ const handleBack = () => {
     </div>
 
     {/* Address */}
-    <div className="md:col-span-2">
+    <div className="md:col-span-2 w-1/2">
       <label className="block text-sm font-semibold">Address</label>
       <input
         type="text"
@@ -508,7 +510,7 @@ const handleBack = () => {
         className="w-full border px-3 py-2 rounded"
         readOnly
       />
-    </div>
+    </div> <br />
 
     {/* Longitude */}
     <div>
@@ -524,7 +526,7 @@ const handleBack = () => {
     </div>
 
     {/* Description */}
-    <div className="md:col-span-2">
+    <div className="md:col-span-2 w-1/2">
       <label className="block text-sm font-semibold">Description</label>
       <textarea
         value={description}
@@ -550,7 +552,7 @@ const handleBack = () => {
     </div>
 
     {/* Submit Button */}
-    <div className="md:col-span-2 text-right">
+    <div className="md:col-span-2 text-right flex justify-center">
       <button
         type="submit"
         className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded"
@@ -559,6 +561,7 @@ const handleBack = () => {
       </button>
     </div>
   </form>
+</div>
 </div>
   )
 }

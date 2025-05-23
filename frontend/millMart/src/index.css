@@ -70,3 +70,14 @@ button:focus-visible {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+ /* :root{
+    --color-BgColor:white,
+    --color-TextColor:black
+ }
+
+ :root[class="dark"]{
+  --color-BgColor:balck,
+  --color-TextColor:lightblue
+
+ } */

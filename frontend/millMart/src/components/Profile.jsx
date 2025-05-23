@@ -70,7 +70,7 @@ export default function Profile(){
       <button className="mr-10 bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded" onClick={()=>{handleDelete(userData._id)}}
       
       >Delete</button>
-      <button className="mr-10 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded" onClick={()=>navigate(`/dashboard/userUpdate/${userData._id}`)}>Edit</button>
+      <button className="mr-10 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded" onClick={()=>navigate(`/account/userUpdate/${userData._id}`)}>Edit</button>
       </div>
       
       </div>

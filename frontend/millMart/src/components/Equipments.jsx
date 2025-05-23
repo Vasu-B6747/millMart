@@ -36,7 +36,7 @@ export default function Equipments(){
   <h2 className="text-2xl font-semibold text-indigo-700">
     List of Equipments
   </h2>
-  {userData.role=='admin'&& <button className="bg-blue-500 text-white px-4 py-2 rounded"  onClick={()=>navigate('/dashboard/equipments/approve')}>Approve/verify Equips</button>}
+  {userData.role=='admin'&& <button className="bg-blue-500 text-white px-4 py-2 rounded"  onClick={()=>navigate('/equipments/approve')}>Approve/verify Equips</button>}
 </div>
       <div className="overflow-x-auto">
         <table className="min-w-full table-auto border border-gray-300 text-sm">

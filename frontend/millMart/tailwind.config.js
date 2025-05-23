@@ -6,7 +6,12 @@ export default {
       "./src/**/*.{js,ts,jsx,tsx}", // Include the right paths
     ],
     theme: {
-      extend: {},
+      extend: {
+        // colors:{
+        //   BgColor:'var(--color-BgColor)',
+        //   TextColor:'var(--color-TextColor)'
+        // }
+      },
     },
     plugins: [],
   }

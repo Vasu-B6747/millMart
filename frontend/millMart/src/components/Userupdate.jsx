@@ -174,7 +174,7 @@ console.log(currentUser)
         <button
             
             className="w-full bg-orange-600 text-white py-2 rounded hover:bg-orange-700 transition mt-5"
-            onClick={()=>navigate('/dashboard/account')}
+            onClick={()=>navigate('/account')}
           >
             Cancel
           </button>

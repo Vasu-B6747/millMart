@@ -72,11 +72,6 @@ export default function Topbar() {
       </div>
 
       <div className="flex items-center space-x-4 relative">
-        <input
-          type="text"
-          placeholder="Search..."
-          className="border px-2 py-1 rounded-md"
-        />
         {/* Profile image with click event */}
         <img
           src={userData.profilePic}

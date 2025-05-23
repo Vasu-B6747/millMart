@@ -122,9 +122,11 @@ const onEdit = (id) => {
 };
 
   const onMessage = (id) =>{
-    navigate(`/dashboard/chat/${id}`)
+    navigate(`/equipment/chat/${id}`)
   }
-  const onOrder = (id) => console.log('Order Equipment:', id);
+  const onOrder = (id) => {
+    navigate(`/payment/${id}`)
+  }
 
   // Determine role and ownership
   const isAdmin = userData?.role === 'admin';
@@ -132,11 +134,11 @@ const onEdit = (id) => {
   const isBuyer = userData?.role === 'buyer' && !isSeller;
   const handleBack=()=>{
     if(userData.role=='admin'){
-      navigate('/dashboard/equipments')
+      navigate('/dashboard')
     }else if(userData.role=='seller'){
       navigate('/dashboard/mylist')
     }else{
-      navigate('/dashboard/home')
+      navigate('/dashboard')
     }
   }
 

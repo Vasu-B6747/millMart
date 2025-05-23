@@ -21,7 +21,7 @@ const Equip = ({ equipment }) => {
 
   return (
     <div
-      onClick={() => navigate(`/dashboard/home/equipmentcard/${_id}`)}
+      onClick={() => navigate(`/dashboard/equipmentcard/${_id}`)}
       className="cursor-pointer bg-white rounded-lg shadow-md overflow-hidden transition hover:shadow-lg"
     >
       <img
@@ -61,27 +61,7 @@ const Equip = ({ equipment }) => {
   );
 };
 
-// export default Equip;
-// import { useNavigate } from 'react-router-dom';
 
-// const Equip = ({ equipment }) => {
-//   const navigate = useNavigate();
-//   const { _id, name, equipmentType, price, photos = [] } = equipment;
-
-//   return (
-//     <div
-//       onClick={() => navigate(`/dashboard/home/equipmentcard/${_id}`)}
-//       className="bg-white rounded shadow hover:shadow-lg cursor-pointer transition"
-//     >
-//       <img src={photos[0]} alt={name} className="w-full h-40 object-cover rounded-t" />
-//       <div className="p-3">
-//         <h3 className="text-lg font-semibold">{name}</h3>
-//         <p className="text-sm text-gray-600">{equipmentType}</p>
-//         <p className="text-sm font-bold text-indigo-700">₹{price.toLocaleString()}</p>
-//       </div>
-//     </div>
-//   );
-// };
 
 export default Equip;
 
