@@ -130,7 +130,7 @@ export default function LandingPage() {
                 return (
                   <div
                     key={index}
-                    className="bg-white rounded shadow p-4 border cursor-pointer hover:shadow-md transition"
+                    className="bg-gray-300 rounded shadow p-4 border cursor-pointer hover:shadow-md transition"
                     onClick={() => setSelectedItem(item)}
                   >
                     <img

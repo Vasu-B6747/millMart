@@ -75,6 +75,7 @@ const RazorpayCheckout = () => {
           const verifyResult = verifyResponse.data;
           if (verifyResponse.status === 200) {
             alert("Payment successful and verified!");
+            navigate(`/review/${id}`)
             console.log(verifyResult);
           } else {
             alert("Payment verification failed");
@@ -104,12 +105,9 @@ const RazorpayCheckout = () => {
   };
 
   return (
-    // <div>
-    //   <h2>Pay {equipmentObj.price} with Razorpay</h2>
-    //   <button onClick={handlePayment}>Pay Now</button>
-    // </div>
+    // 
     <div className="p-4 max-w-lg mx-auto h-[500px] bg-white shadow rounded mt-9">
-    {/* <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4"> */}
+    
         <div>
       <h2 className="text-xl font-semibold mb-4">
         Pay ₹{equipmentObj.price.toLocaleString()} with Razorpay

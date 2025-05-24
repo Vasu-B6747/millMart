@@ -75,6 +75,8 @@
 
 // export default App;
 import { ToastContainer } from 'react-toastify';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -103,6 +105,7 @@ import NearbyEquipmentSearch from './components/Nearby';
 import Home from './components/Home';
 import LandPage from './components/LandPage';
 import RazorpayCheckout from './components/Payment';
+import ReviewForm from './components/Review';
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.user);
@@ -139,13 +142,15 @@ function App() {
             <Route path="/equipments/approve" element={<ApproveEquips />} />
             <Route path="/dashboard/mylist" element={<MyEquipments />} />
             <Route path="/dashboard/equipment/:id" element={<EquipmentForm />} />
-            <Route path="/equipment/chat/:id" element={<Chat />} />
+            <Route path="/equipment/chat/:recId/:id" element={<Chat />} />
             <Route path="/chat" element={<Chat />} />
             <Route path="/search" element={<EquipmentSearch />} />
-            <Route path="location" element={<NearbyEquipmentSearch />} />
+            <Route path="/location" element={<NearbyEquipmentSearch />} />
             <Route path="home" element={<Home />} />
             <Route path="/dashboard/equipmentcard/:id" element={<EquipmentCard />} />
             <Route path='/payment/:id' element={<RazorpayCheckout/>}/>
+            <Route path='/review/:id' element={<ReviewForm/>}/>
+            <Route path='/review' element={<ReviewForm/>}/>
           </Route>
         )}
       </Routes>

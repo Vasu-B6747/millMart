@@ -121,8 +121,8 @@ const onEdit = (id) => {
   navigate(`/dashboard/equipment/${id}`);
 };
 
-  const onMessage = (id) =>{
-    navigate(`/equipment/chat/${id}`)
+  const onMessage = (recId,id) =>{
+    navigate(`/equipment/chat/${recId}/${id}`)
   }
   const onOrder = (id) => {
     navigate(`/payment/${id}`)
@@ -156,7 +156,7 @@ const onEdit = (id) => {
         <img
           src={mainPhoto}
           alt={title}
-          className="rounded-md w-full h-64 object-cover mb-2"
+          className="rounded-md w-full h-96 object-cover mb-2"
         />
         <div className="flex gap-2 flex-wrap">
           {photos.map((photo, index) => (
@@ -164,7 +164,7 @@ const onEdit = (id) => {
               key={index}
               src={photo}
               alt={`Thumbnail ${index + 1}`}
-              className={`w-16 h-16 object-cover rounded cursor-pointer border-2 ${
+              className={`w-30 h-20 object-cover rounded cursor-pointer border-2 ${
                 photo === mainPhoto ? 'border-indigo-500' : 'border-transparent'
               }`}
               onClick={() => setMainPhoto(photo)}
@@ -260,7 +260,7 @@ const onEdit = (id) => {
 
           {isBuyer && (
             <>
-              <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1 rounded" onClick={() => onMessage(seller?._id)}>💬 Message</button>
+              <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1 rounded" onClick={() => onMessage(seller?._id,_id)}>💬 Message</button>
               <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded" onClick={() => onOrder(_id)}>🛒 Order</button>
             </>
           )}

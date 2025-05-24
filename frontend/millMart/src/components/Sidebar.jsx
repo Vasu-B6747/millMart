@@ -104,9 +104,19 @@ export default function Sidebar() {
             </Link>
           </li>
 
-          <li>
+          {/* <li>
             <Link to="/search" className="block px-4 py-2 hover:bg-blue-100">
               Equipment Search
+            </Link>
+          </li>
+          <li>
+            <Link to="/review" className="block px-4 py-2 hover:bg-blue-100">
+              Equipment review
+            </Link>
+          </li> */}
+          <li>
+            <Link to="/location" className="block px-4 py-2 hover:bg-blue-100">
+             NearbyEquipmentSearch
             </Link>
           </li>
 

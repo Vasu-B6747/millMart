@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector,useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
+import { fetchMessages } from '../slices/messageSlice';
 
 const socket = io('http://localhost:3045'); // Backend Socket.IO server
 
@@ -9,15 +10,17 @@ const Chat = () => {   //{ userId, receiverId }
     const {userData}=useSelector((state)=>{
         return state.user
     })
-    const { id } = useParams(); // This will be the buyerId if seller is logged in
-    console.log(id)
+    const dispatch=useDispatch()
+    const { recId,id } = useParams(); // This will be the buyerId if seller is logged in
+    console.log(recId,id)
   const [message, setMessage] = useState('');
   const [chat, setChat] = useState([]);
     const userId=userData._id
-    const receiverId=id || '6821c6ea475a5a1a5d0d6f90'
+    const receiverId=recId || '6821c6ea475a5a1a5d0d6f90'
     console.log(receiverId)
   useEffect(() => {
     // Join your room
+    dispatch(fetchMessages())
     socket.emit('join', userId);
 
     // Listen for incoming messages
@@ -34,6 +37,7 @@ const Chat = () => {   //{ userId, receiverId }
     const msgData = {
       sender: userId,
       receiver: { _id: receiverId },
+      equipmentId:id,
       content: message,
     };
     socket.emit('sendMessage', msgData);
@@ -64,57 +68,3 @@ const Chat = () => {   //{ userId, receiverId }
 };
 
 export default Chat;
-/*  
-import React, { useEffect, useState } from 'react';
-import { io } from 'socket.io-client';
-
-const Chat = ({ userId }) => {
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
-  const socket = io('http://localhost:3045');
-
-  useEffect(() => {
-    socket.emit('join', userId);
-
-    socket.on('newMessage', (message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, [userId]);
-
-  const handleSendMessage = () => {
-    const message = {
-      sender: userId,
-      receiver: 'receiverId', // Replace with actual receiver ID
-      content: newMessage,
-    };
-    socket.emit('sendMessage', message);
-    setNewMessage('');
-  };
-
-  return (
-    <div>
-      <div>
-        {messages.map((msg, index) => (
-          <div key={index}>
-            <strong>{msg.sender}</strong>: {msg.content}
-          </div>
-        ))}
-      </div>
-      <input
-        type="text"
-        value={newMessage}
-        onChange={(e) => setNewMessage(e.target.value)}
-        placeholder="Type a message..."
-      />
-      <button onClick={handleSendMessage}>Send</button>
-    </div>
-  );
-};
-
-export default Chat;
-
-*/
