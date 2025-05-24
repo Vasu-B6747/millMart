@@ -305,7 +305,7 @@ userCtrl.activate=async(req,res)=>{
                     email: user.email,
                     subject: 'Account Activated',
                     message: 'Your account has been activated.',
-                    html: '<p>Your account has been <strong>activated</strong>.</p>'
+                    html: '<p>Your account has been <strong>activated</strong>.</p> \n <p><strong>Welcome to MillMart Team</strong></p>'
                   });
             }else{
                 await sendEmail({
@@ -343,7 +343,7 @@ userCtrl.isVerify=async(req,res)=>{
                     email: user.email,
                     subject: 'Account Verified',
                     message: 'Your account has been successfully verified.',
-                    html: '<p>Your account has been <strong>successfully verified</strong>.</p>'
+                    html: '<p>Your account has been <strong>successfully verified</strong>.</p> \n <p><strong>Thanks for choosing MillMart</strong></p>'
                   });
             }
             res.json(user)

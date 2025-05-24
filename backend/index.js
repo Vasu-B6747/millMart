@@ -91,7 +91,7 @@ app.patch('/equipment/sold/:id',authenticateUser,checkSchema(idValidationSchema)
 
 //message
 app.post('/message',authenticateUser,checkSchema(messageValidationSchema),messageCtrl.sendMessage)
-app.get('/messages',authenticateUser,messageCtrl.getMessages)
+app.get('/messages/user/:id',authenticateUser,checkSchema(idValidationSchema),messageCtrl.getMessages)
 app.delete('/message/:id',authenticateUser,checkSchema(idValidationSchema),messageCtrl.deleteMessage)
 app.get('/message/:id',authenticateUser,checkSchema(idValidationSchema),messageCtrl.getmessagebyId)
 app.patch('/message/:id',authenticateUser,checkSchema(idValidationSchema),messageCtrl.markAsRead)

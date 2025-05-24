@@ -354,13 +354,13 @@ equipmentCtrl.verify = async (req, res) => {
         if (!equipment) return res.status(404).json({ error: 'Equipment not found' });
         if (req.body.isVerified) {
             const subject = 'Your Equipment is Verified!';
-            const textMessage = `Your equipment listing has been verified.\n\nTitle: ${equipment.title}\n\nThank you for using AgriMarket!`;
+            const textMessage = `Your equipment listing has been verified.\n\nTitle: ${equipment.title}\n\nThank you for using MillMart!`;
           
             const emailHTML = `
               <div style="font-family: Arial, sans-serif; line-height: 1.6;">
                 <h2 style="color: #2e7d32;">✅ Your Equipment Listing Has Been Verified</h2>
                 <p><strong>Title:</strong> ${equipment.title}</p>
-                <p>Thank you for using <strong>AgriMarket</strong>!</p>
+                <p>Thank you for using <strong>MillMart</strong>!</p>
               </div>
             `;
           
@@ -382,13 +382,13 @@ equipmentCtrl.verify = async (req, res) => {
 //10.nearby
 equipmentCtrl.getNearby = async (req, res) => {
     const { lng, lat, distance } = req.query;
-    console.log(lng,lat)
+    console.log(lng,lat,distance)
     try {
         const equipments = await Equipment.find({
             'location.coordinates': {
                 $near: {
                     $geometry: { type: 'Point', coordinates: [parseFloat(lng), parseFloat(lat)] }
-                    // $maxDistance: parseFloat(distance)
+                    //$maxDistance: parseFloat(distance)
                 }
             }
         });
