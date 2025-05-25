@@ -1,23 +1,40 @@
 import { createAsyncThunk,createSlice } from '@reduxjs/toolkit';
 import axios from '../configure/baseURL'
-export const fetchMessages=createAsyncThunk('/messages/fetchMessages',async(id)=>{
+//create
+export const createMessage=createAsyncThunk('/messages/createMessage',async(msgObj,{ rejectWithValue })=>{
+  // console.log(msgObj)
   try{
-    const response=await axios.get(`messages/user/${id}`,{headers:{Authorization:localStorage.getItem('token')}})
+    // console.log(msgObj)
+    const response=await axios.post('message',msgObj,{headers:{Authorization:localStorage.getItem('token')}})
     console.log(response.data)
     return response.data
   }catch(err){
     console.log(err)
+    return rejectWithValue(err.response?.data || "Failed to create message");
+
+  }
+})
+export const fetchMessages=createAsyncThunk('/messages/fetchMessages',async(userId,{ rejectWithValue })=>{
+  console.log(userId)
+  try{
+    const response=await axios.get(`messages/user/${userId}`,{headers:{Authorization:localStorage.getItem('token')}})
+    console.log(response.data)
+    return response.data
+  }catch(err){
+    console.log(err)
+    return rejectWithValue(err.response?.data || "Failed to fetch messages");
 
   }
 })
 //getusermessage
-export const getMessage=createAsyncThunk('/messages/getMessage',async(id)=>{
+export const getMessage=createAsyncThunk('/messages/getMessage',async(id,{ rejectWithValue })=>{
   try{
     const response=await axios.get(`message/${id}`,{headers:{Authorization:localStorage.getItem('token')}})
     console.log(response.data)
     return response.data
   }catch(err){
     console.log(err)
+    return rejectWithValue(err.response?.data || "Failed to create message");
 
   }
 })
