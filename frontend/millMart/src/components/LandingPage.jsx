@@ -7,6 +7,8 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import Gallerypage from './pages/Gallerypage';
 import Contactpage from './pages/Contactpage'
 import Footerpage from './pages/Footerpage';
+import Pricepage from './pages/Pricepage'
+import Heropage from './pages/Heropage'
 import 'swiper/css';
 import 'swiper/css/pagination';
 
@@ -118,6 +120,7 @@ export default function LandingPage() {
       {/* Scrollable Equipment Section */}
       <div className="flex-1 overflow-auto p-4 bg-gray-100 w-full">
       <div className="flex-1 overflow-auto p-4 bg-gray-100 w-full">
+        <Heropage/>
         <div className="max-w-screen-2xl mx-auto">
           {/* <h2 className="text-2xl font-bold mb-6">List of Equipments</h2> */}
 
@@ -202,6 +205,7 @@ export default function LandingPage() {
      <Gallerypage/>
      <Contactpage/>
      <Footerpage/>
+     <Pricepage />
     </div>  
       </div>
       
