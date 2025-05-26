@@ -95,6 +95,8 @@ app.get('/messages/user/:id',authenticateUser,checkSchema(idValidationSchema),me
 app.delete('/message/:id',authenticateUser,checkSchema(idValidationSchema),messageCtrl.deleteMessage)
 app.get('/message/:id',authenticateUser,checkSchema(idValidationSchema),messageCtrl.getmessagebyId)
 app.patch('/message/:id',authenticateUser,checkSchema(idValidationSchema),messageCtrl.markAsRead)
+app.get('/conversation/:userId/:receiverId',authenticateUser,checkSchema(idValidationSchema), messageCtrl.getConversation);
+
 
 //reviews
 app.post('/review',authenticateUser,checkSchema(createReviewValidation),reviewCtrl.createReview)

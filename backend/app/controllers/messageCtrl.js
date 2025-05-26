@@ -10,11 +10,13 @@ messageCtrl.sendMessage=async(req,res)=>{
         }
     // const {sender,receiver,equipmentId,content}=req.body
     const body=req.body
+    // console.log(body)
     try{
         const message=await Message.create(body)
+         console.log(message)
          const io = req.app.get('io')
-        //  io.to(message.receiver.toString()).emit('newMessage', message)
-        req.io.to(req.body.receiver).emit('newMessage', message)
+        io.to(message.sender.toString()).emit('newMessage', message)
+        io.to(req.body.receiver).emit('newMessage', message)
         res.status(201).json(message)
     }catch(err){
         console.log(err)
@@ -29,7 +31,7 @@ messageCtrl.getMessages=async(req,res)=>{
         }
     const userId=req.userId
     try{
-        const message=await Message.find({$or:[{sender:userId},{receiver:userId}]}).populate('sender receiver equipmentId');
+        const message=await Message.find({receiver:userId}).populate('sender receiver equipmentId');
         if(!message){
             return res.status(404).json({error:'Data not found'})
         }
@@ -105,4 +107,24 @@ messageCtrl. deleteMessage = async (req, res) => {
       res.status(500).json({ error: 'Failed to delete message'});
     }
   };
+
+  //both
+  messageCtrl.getConversation = async (req, res) => {
+  const { userId, receiverId } = req.params;
+
+  try {
+    const messages = await Message.find({
+      $or: [
+        { sender: userId, receiver: receiverId },
+        { sender: receiverId, receiver: userId },
+      ]
+    }).sort({ createdAt: 1 }); // Sort oldest to newest
+
+    res.status(200).json(messages);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch conversation' });
+  }
+};
+
   export default messageCtrl
