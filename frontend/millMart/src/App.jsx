@@ -106,6 +106,7 @@ import Home from './components/Home';
 import LandPage from './components/LandPage';
 import RazorpayCheckout from './components/Payment';
 import ReviewForm from './components/Review';
+import Messages from './components/Messages';
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.user);
@@ -143,7 +144,7 @@ function App() {
             <Route path="/dashboard/mylist" element={<MyEquipments />} />
             <Route path="/dashboard/equipment/:id" element={<EquipmentForm />} />
             <Route path="/equipment/chat/:recId/:id" element={<Chat />} />
-            <Route path="/chat" element={<Chat />} />
+            <Route path="/chat" element={<Messages />} />
             <Route path="/search" element={<EquipmentSearch />} />
             <Route path="/location" element={<NearbyEquipmentSearch />} />
             <Route path="home" element={<Home />} />

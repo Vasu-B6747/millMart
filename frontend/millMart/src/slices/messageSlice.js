@@ -38,11 +38,28 @@ export const getMessage=createAsyncThunk('/messages/getMessage',async(id,{ rejec
 
   }
 })
+//both
+// Fetch messages between a specific user and a receiver
+export const fetchConversation = createAsyncThunk(
+  '/messages/fetchConversation',
+  async ({ userId, receiverId }, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`conversation/${userId}/${receiverId}`, {
+        headers: { Authorization: localStorage.getItem('token') }
+      });
+      return response.data;
+    } catch (err) {
+      console.log(err);
+      return rejectWithValue(err.response?.data || 'Failed to fetch conversation');
+    }
+  }
+);
+
 
 
 const initialState = {
   messages: [],
-  Message:null,
+  userMessages:[],
   loading: false,
   error: null,
 };
@@ -69,13 +86,27 @@ const messageSlice = createSlice({
       state.loading=true
     })
     builder.addCase(fetchMessages.fulfilled,(state,action)=>{
-      state.messages=action.payload
+      state.userMessages=action.payload
       state.loading=false
     })
      builder.addCase(fetchMessages.rejected,(state,action)=>{
       state.error='Something went wrong'
       state.loading=false
     })
+    //
+        // fetchConversation
+    builder.addCase(fetchConversation.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchConversation.fulfilled, (state, action) => {
+      state.messages = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(fetchConversation.rejected, (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    });
+
 
     //getMessage
     builder.addCase(getMessage.pending,(state,action)=>{
