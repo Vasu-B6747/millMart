@@ -107,9 +107,10 @@ import LandPage from './components/LandPage';
 import RazorpayCheckout from './components/Payment';
 import ReviewForm from './components/Review';
 import Messages from './components/Messages';
+import { fetchAllpayments, userPayments } from './slices/paymentSlice';
 
 function App() {
-  const { isLoggedIn } = useSelector((state) => state.user);
+  const { isLoggedIn,userData } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -117,8 +118,13 @@ function App() {
       dispatch(fetchUserAccount());
     }
     dispatch(fetchEquipments());
+    dispatch(userPayments())
   }, [dispatch]);
-
+useEffect(()=>{
+if(userData&&userData.role=='admin'){
+  dispatch(fetchAllpayments())
+}
+},[userData])
   return (
     <>
       <Routes>

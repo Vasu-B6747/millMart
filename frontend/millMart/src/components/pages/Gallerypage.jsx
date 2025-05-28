@@ -11,7 +11,7 @@ export default function Gallerypage(){
         <div className="mt-4">
           <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
           <h2 className="text-gray-900 title-font text-lg font-medium">The RiceMill_Plant</h2>
-          <p className="mt-1">$16.00</p>
+          <p className="mt-1">₹26,00,000.00</p>
         </div>
       </div>
       <div className="lg:w-1/4 md:w-1/2 p-4 w-full">
@@ -21,7 +21,7 @@ export default function Gallerypage(){
         <div className="mt-4">
           <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
           <h2 className="text-gray-900 title-font text-lg font-medium">Polishers</h2>
-          <p className="mt-1">$21.15</p>
+          <p className="mt-1">₹21.15k</p>
         </div>
       </div>
       <div className="lg:w-1/4 md:w-1/2 p-4 w-full">
@@ -31,7 +31,7 @@ export default function Gallerypage(){
         <div className="mt-4">
           <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
           <h2 className="text-gray-900 title-font text-lg font-medium">Cleaner</h2>
-          <p className="mt-1">$12.00</p>
+          <p className="mt-1">₹1.2L</p>
         </div>
       </div>
       <div className="lg:w-1/4 md:w-1/2 p-4 w-full">
@@ -41,7 +41,7 @@ export default function Gallerypage(){
         <div className="mt-4">
           <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
           <h2 className="text-gray-900 title-font text-lg font-medium">The De-Stoner</h2>
-          <p className="mt-1">$18.40</p>
+          <p className="mt-1">₹1.8L</p>
         </div>
       </div>
       <div className="lg:w-1/4 md:w-1/2 p-4 w-full">
@@ -51,7 +51,7 @@ export default function Gallerypage(){
         <div className="mt-4">
           <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
           <h2 className="text-gray-900 title-font text-lg font-medium">The De-Husker</h2>
-          <p className="mt-1">$16.00</p>
+          <p className="mt-1">₹1.6L</p>
         </div>
       </div>
       <div className="lg:w-1/4 md:w-1/2 p-4 w-full">
@@ -61,7 +61,7 @@ export default function Gallerypage(){
         <div className="mt-4">
           <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
           <h2 className="text-gray-900 title-font text-lg font-medium">Stars Blowers</h2>
-          <p className="mt-1">$21.15</p>
+          <p className="mt-1">₹211k</p>
         </div>
       </div>
       <div className="lg:w-1/4 md:w-1/2 p-4 w-full">
@@ -71,7 +71,7 @@ export default function Gallerypage(){
         <div className="mt-4">
           <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
           <h2 className="text-gray-900 title-font text-lg font-medium">Rice Cleaners</h2>
-          <p className="mt-1">$12.00</p>
+          <p className="mt-1">₹1.3L</p>
         </div>
       </div>
       <div className="lg:w-1/4 md:w-1/2 p-4 w-full">
@@ -81,7 +81,7 @@ export default function Gallerypage(){
         <div className="mt-4">
           <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
           <h2 className="text-gray-900 title-font text-lg font-medium">The Rice Sortex</h2>
-          <p className="mt-1">$18.40</p>
+          <p className="mt-1">₹38.9L</p>
         </div>
       </div>
     </div>

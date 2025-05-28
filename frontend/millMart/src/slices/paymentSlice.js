@@ -13,7 +13,7 @@ export const fetchAllpayments=createAsyncThunk('/payments/fetchAllpayment',async
 //userPayments
 export const userPayments=createAsyncThunk('/payments/userPayments',async()=>{
     try{
-        const response=await axios.get('payment/user/',{headers:{Authorization:localStorage.getItem('token')}})
+        const response=await axios.get('userpayment',{headers:{Authorization:localStorage.getItem('token')}})
         console.log(response.data)
         return response.data
     }catch(err){

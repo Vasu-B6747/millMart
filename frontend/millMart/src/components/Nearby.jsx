@@ -85,7 +85,7 @@ const NearbyEquipmentSearch = () => {
   };
 
   return (
-    <div>
+    <div className='ml-5'>
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Find Nearby Equipment</h2>
 
 <form onSubmit={handleSearchByAddress} className="flex flex-col sm:flex-row items-center gap-4 mb-6">
@@ -128,7 +128,7 @@ const NearbyEquipmentSearch = () => {
         >
           <h4 className="text-lg font-bold text-gray-800 mb-2">{item.title}</h4>
           <p className="text-gray-700"><span className="font-medium">Type:</span> {item.equipmentType}</p>
-          <p className="text-gray-700"><span className="font-medium">Price:</span> ${item.price}</p>
+          <p className="text-gray-700"><span className="font-medium">Price:</span> ₹{item.price}</p>
           <p className="text-gray-700"><span className="font-medium">Address:</span> {item.location?.address || 'N/A'}</p>
         </div>
       ))}
