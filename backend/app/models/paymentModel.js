@@ -9,6 +9,6 @@ const paymentSchema = new Schema({
     razorpay_order_id: { type: String },
     razorpay_payment_id: { type: String },
     razorpay_signature: { type: String }
-  }, { timestamps: { createdAt: 'transactionDate' } });
+  }, { timestamps: true });
   const Payment=model('Payment',paymentSchema)
   export default Payment

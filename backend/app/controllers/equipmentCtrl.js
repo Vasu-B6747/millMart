@@ -265,25 +265,7 @@ equipmentCtrl.getBySeller=async(req,res)=>{
 //     }
 // };
 
-// equipmentCtrl.search = async (req, res) => {
-//     const { type, condition, minPrice, maxPrice } = req.query;
-//     let query = {};
-//     if (type) query.equipmentType = type;
-//     if (condition) query.condition = condition;
-//     if (minPrice || maxPrice) {
-//         query.price = {};
-//         if (minPrice) query.price.$gte = Number(minPrice);
-//         if (maxPrice) query.price.$lte = Number(maxPrice);
-//     }
 
-//     try {
-//         const equipments = await Equipment.find(query);
-//         res.json(equipments);
-//     } catch (err) {
-//         console.log(err);
-//         res.status(500).json({ error: 'Something went wrong' });
-//     }
-// };
 
 equipmentCtrl.search = async (req, res) => {
     const { type, condition, minPrice, maxPrice } = req.query;
@@ -315,7 +297,48 @@ equipmentCtrl.search = async (req, res) => {
     }
 };
 
+/* 
+equipmentCtrl.search = async (req, res) => {
+  const { search, type, condition, minPrice, maxPrice, page, limit } = req.query;
 
+  let filter = {};
+
+  if (search) {
+    const regex = new RegExp(search, 'i');
+    filter.$or = [
+      { title: regex },
+      { equipmentType: regex },
+      { condition: regex },
+      { brand: regex },
+    ];
+  }
+
+  if (type) filter.equipmentType = type;
+  if (condition) filter.condition = condition;
+
+  if (minPrice || maxPrice) {
+    filter.price = {};
+    if (minPrice) filter.price.$gte = Number(minPrice);
+    if (maxPrice) filter.price.$lte = Number(maxPrice);
+  }
+
+  try {
+    const queryBuilder = Equipment.find(filter);
+
+    const result = await paginateQuery(queryBuilder, {
+      page: parseInt(page, 10) || 0,
+      limit: parseInt(limit, 10) || 12,
+      sort: { createdAt: -1 }
+    });
+
+    res.json(result);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: 'Something went wrong' });
+  }
+};
+
+*/
 //8.approval
 equipmentCtrl.approve = async (req, res) => {
     const errors=validationResult(req)

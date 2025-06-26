@@ -108,10 +108,10 @@ app.delete('/review/:id',authorisedUser,checkSchema(idValidationSchema),reviewCt
 
 //payment
 app.post('/payment',authenticateUser,checkSchema(createPaymentValidation),paymentCtrl.createPayment)
-app.get('/payments',authenticateUser,authorisedUser(['admin']),paymentCtrl.getAllPayments)
+app.get('/payments',authenticateUser,paymentCtrl.getAllPayments)
 app.delete('/payment/:id',authenticateUser,authorisedUser(['admin']),checkSchema(idValidationSchema),paymentCtrl.deletePayment)
 app.get('/payment/:id',authenticateUser,checkSchema(idValidationSchema),paymentCtrl.getPaymentById)
-app.get('/payment/user',authenticateUser,paymentCtrl.getUserPayments)
+app.get('/userpayment',authenticateUser,paymentCtrl.getUserPayments)
 app.post('/payment/razor',authenticateUser,paymentCtrl.createRazorpayOrder)
 app.post('/payments/verify-razorpay',authenticateUser,paymentCtrl.verifyRazorpayPayment)
 app.patch('/payment/complete/:id',authenticateUser,checkSchema(idValidationSchema),paymentCtrl.completePayment)
