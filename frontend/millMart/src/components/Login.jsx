@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { isEmail } from 'validator';
 import { login } from '../slices/userSlice';
+import {Eye,EyeOff} from 'lucide-react'
 import axios from '../configure/baseURL'
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPass,setShowPass]=useState(false)
   const [clientErrors, setClientErrors] = useState({}); 
   const [serverErrors, setServerErrors] = useState(null); 
   const navigate = useNavigate(); 
@@ -75,17 +77,31 @@ export default function Login() {
             />
              { clientErrors.email && <p style={{color:'red'}}> { clientErrors.email } </p>}
           </div>
+          
           <div className="mb-4">
-            <label htmlFor="password" className="block text-sm font-semibold text-gray-600">Password</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-             { clientErrors.password && <p style={{color:'red'}}> { clientErrors.password } </p>}
+            <label htmlFor="password" className="block text-sm font-semibold text-gray-600">
+              Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPass ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-2 mt-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <span
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-indigo-600"
+                onClick={() => setShowPass(!showPass)}
+              >
+                {showPass ? <Eye /> : <EyeOff />}
+              </span>
           </div>
+  {clientErrors.password && (
+    <p style={{ color: "red" }}>{clientErrors.password}</p>
+  )}
+</div>
+
           <button
             type="submit"
             className="w-full py-2 mt-4 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none"

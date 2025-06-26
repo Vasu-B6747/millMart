@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { ImageOff } from "lucide-react";
 import { fetchEquipment,deleteEquipment,verifyEquipments,markSold,approveEquipments } from '../slices/equipmentSlice';
 
 const EquipmentCard = () => {
@@ -22,11 +23,11 @@ const EquipmentCard = () => {
     }
   }, [id, dispatch]);
 
-  useEffect(() => {
-    if (!mainPhoto && equipment?.photos?.length > 0) {
-      setMainPhoto(equipment.photos[0]);
-    }
-  }, [equipment, mainPhoto]);
+ useEffect(() => {
+  if (equipment?.photos?.length > 0) {
+    setMainPhoto(equipment.photos[0]);
+  }
+}, [equipment?.photos]);
 
   if (!equipment || !equipment.photos || equipment.photos.length === 0 || !mainPhoto) {
     return <div>Loading...</div>;
@@ -143,142 +144,202 @@ const onEdit = (id) => {
   }
 
   return (
-    <div>
+    <div className='bg-gray-50 shadow-md m-3 p-3 rounded-[10px]'>
       <div> <button className="bg-red-500 hover:bg-red-700 text-white font-medium py-1 px-2 rounded flex items-center space-x-2 mt-2 ml-2" onClick={handleBack}>
             <span>&larr;</span>
             <span>Back</span>
           </button>
     </div>
-    <div className="bg-white shadow-md rounded-md p-4 mb-6 flex flex-col md:flex-row mt-8 ml-5 mr-10">
+    <div className="rounded-md p-4 mb-6 flex flex-col md:flex-row mt-2 ml-5 mr-10">
       
     
-      <div className="md:w-1/3 mb-4 md:mb-0">
-        <img
-          src={mainPhoto}
-          alt={title}
-          className="rounded-md w-full h-96 object-cover mb-2"
-        />
-        <div className="flex gap-2 flex-wrap">
-          {photos.map((photo, index) => (
-            <img
-              key={index}
-              src={photo}
-              alt={`Thumbnail ${index + 1}`}
-              className={`w-30 h-20 object-cover rounded cursor-pointer border-2 ${
-                photo === mainPhoto ? 'border-indigo-500' : 'border-transparent'
-              }`}
-              onClick={() => setMainPhoto(photo)}
-            />
-          ))}
-        </div>
+  <div className="md:w-1/3 mb-4 md:mb-0 bg-white p-4 rounded border border-gray-200 shadow">
+  {/* Main Image */}
+  <div className="relative w-full h-96 mb-4">
+    {mainPhoto ? (
+      <img
+        src={mainPhoto}
+        alt={title}
+        className="rounded-lg w-full h-full object-cover"
+      />
+    ) : (
+      <div className="flex items-center justify-center h-full bg-gray-100 rounded-lg border border-dashed border-gray-300">
+        <ImagePlus className="text-gray-400 w-12 h-12" />
+        <p className="text-gray-500 text-sm mt-2">No Image</p>
       </div>
+    )}
+  </div>
+
+  {/* Thumbnails */}
+  <div className="flex gap-3 flex-wrap justify-center">
+    {photos?.map((photo, index) => (
+      <img
+        key={index}
+        src={photo}
+        alt={`Thumbnail ${index + 1}`}
+        className={`w-24 h-20 object-cover rounded-lg cursor-pointer border-2 transition-transform duration-200 border-gray-400 ${
+          photo === mainPhoto ? "border-blue-500 scale-105" : "border-transparent hover:scale-105"
+        }`}
+        onClick={() => setMainPhoto(photo)}
+      />
+    ))}
+  </div>
+</div>
 
       {/* Info Section */}
-      <div className="md:ml-6 flex-1">
-        <h2 className="text-xl font-bold text-gray-800 mb-2">{title}</h2>
-        <p className="text-gray-600"><strong>Brand:</strong> {brand}</p>
-        <p className="text-gray-600"><strong>Model:</strong> {model}</p>
-        <p className="text-gray-600"><strong>Type:</strong> {equipmentType}</p>
-        <p className="text-gray-600"><strong>Condition:</strong> {condition}</p>
-        <p className="text-gray-600"><strong>Manufactured:</strong> {yearManufactured}</p>
-        <p className="text-gray-600"><strong>Price:</strong> ₹{price.toLocaleString()}</p>
-        <p className="text-gray-600"><strong>Location:</strong> {location?.address}</p>
-        <p className="text-gray-600"><strong>Description:</strong> {description}</p>
-        <p className="text-gray-600"><strong>Seller:</strong> {seller?.name} ({seller?.email})</p>
-        <p className="text-sm text-gray-400">Created on: {new Date(createdAt).toLocaleDateString()}</p>
+      <div className="md:ml-6 flex-1 bg-white shadow-lg rounded-xl p-6">
+  {/* Title */}
+  <h2 className="text-2xl font-semibold text-gray-800 mb-4">{title}</h2>
 
-        {/* Role-Based Action Buttons */}
-        <div className="mt-4 flex flex-wrap gap-3">
-          {isAdmin && (
-            <>
-              <button
-                  onClick={() => onDelete(_id)}
-                  disabled={loadingAction === 'delete' }
-                  className={`bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded ${
-                    loadingAction === 'delete' ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
-                >
-                  {loadingAction === 'delete' ? 'Deleting...' : '🗑 Delete'}
-              </button>
-              <button
-                onClick={() => onVerify(_id)}
-                disabled={loadingAction === 'verify' || isVerified} className={`px-4 py-1 rounded text-white ${
-                isVerified ? 'bg-gray-400 cursor-not-allowed' :
-                loadingAction === 'verify' ? 'bg-green-300' : 'bg-green-600 hover:bg-green-700'
-                }`}>
-                      {loadingAction === 'verify' ? 'Verifing...' :isVerified?'Verified': '✔ Verify'}
-              </button>
-             
+  {/* Details */}
+  <div className="space-y-2 text-gray-700 text-sm md:text-base">
+    <p><span className="font-medium">Brand:</span> {brand}</p>
+    <p><span className="font-medium">Model:</span> {model}</p>
+    <p><span className="font-medium">Type:</span> {equipmentType}</p>
+    <p><span className="font-medium">Condition:</span> {condition}</p>
+    <p><span className="font-medium">Manufactured:</span> {yearManufactured}</p>
+    <p><span className="font-medium">Price:</span> <span className="text-green-600 font-semibold">₹{price.toLocaleString()}</span></p>
+    <p><span className="font-medium">Location:</span> {location?.address}</p>
+    <p><span className="font-medium">Description:</span> {description}</p>
+    <p><span className="font-medium">Seller:</span> {seller?.name} <span className="text-gray-500 text-sm">({seller?.email})</span></p>
+    <p className="text-sm text-gray-400">Posted on: {new Date(createdAt).toLocaleDateString()}</p>
+  </div>
 
+  {/* Action Buttons */}
+  <div className="mt-6 flex flex-wrap gap-3">
+    {isAdmin && (
+      <>
+        <button
+          onClick={() => onDelete(_id)}
+          disabled={loadingAction === 'delete'}
+          className={`px-4 py-2 text-sm rounded-md font-medium transition ${
+            loadingAction === 'delete'
+              ? 'bg-red-400 text-white cursor-not-allowed'
+              : 'bg-red-600 hover:bg-red-700 text-white'
+          }`}
+        >
+          {loadingAction === 'delete' ? 'Deleting...' : '🗑 Delete'}
+        </button>
 
+        <button
+          onClick={() => onVerify(_id)}
+          disabled={loadingAction === 'verify' || isVerified}
+          className={`px-4 py-2 text-sm rounded-md font-medium transition ${
+            isVerified
+              ? 'bg-gray-400 text-white cursor-not-allowed'
+              : 'bg-green-600 hover:bg-green-700 text-white'
+          }`}
+        >
+          {loadingAction === 'verify' ? 'Verifying...' : isVerified ? '✔ Verified' : '✔ Verify'}
+        </button>
 
-              {/* <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded" onClick={() => onVerify(_id)}>✔ Verify</button> */}
-             <button onClick={() => onMarkSold(_id)} disabled={loadingAction === 'sold' || isSold} className={`px-4 py-1 rounded text-white ${
-                isSold ? 'bg-gray-400 cursor-not-allowed' :
-                  loadingAction === 'sold' ? 'bg-yellow-300' : 'bg-yellow-600 hover:bg-yellow-700'
-                }`}>
-              {loadingAction === 'sold' ? 'Marking...' : isSold ? 'SOLD' : '🚚 Mark as Sold'}
-            </button>
+        <button
+          onClick={() => onMarkSold(_id)}
+          disabled={loadingAction === 'sold' || isSold}
+          className={`px-4 py-2 text-sm rounded-md font-medium transition ${
+            isSold
+              ? 'bg-gray-400 text-white cursor-not-allowed'
+              : 'bg-yellow-500 hover:bg-yellow-600 text-white'
+          }`}
+        >
+          {loadingAction === 'sold' ? 'Marking...' : isSold ? 'SOLD' : '🚚 Mark as Sold'}
+        </button>
 
-              {/* <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded" onClick={() => onApprove(_id)}>✅ Approve</button> */}
-              <button
-                  onClick={() => onApprove(_id)}
-                  disabled={loadingAction === 'approve' || isApproved} className={`px-4 py-1 rounded text-white ${
-                isApproved ? 'bg-gray-400 cursor-not-allowed' :
-                  loadingAction === 'approve' ? 'bg-blue-300' : 'bg-blue-600 hover:bg-blue-700'
-                }`}
-                >
-                  {/* {loadingAction === 'approve' ? 'Approving...' : '✅ Approve'} */}
-                   {loadingAction === 'approve' ? 'Approving...' :isApproved ?'✅ Approved': '✅ Approve'}
-              </button>
+        <button
+          onClick={() => onApprove(_id)}
+          disabled={loadingAction === 'approve' || isApproved}
+          className={`px-4 py-2 text-sm rounded-md font-medium transition ${
+            isApproved
+              ? 'bg-gray-400 text-white cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700 text-white'
+          }`}
+        >
+          {loadingAction === 'approve' ? 'Approving...' : isApproved ? '✅ Approved' : '✅ Approve'}
+        </button>
+      </>
+    )}
 
-            </>
-          )}
+    {isSeller && (
+      <>
+        <button
+          onClick={() => onEdit(_id)}
+          className="px-4 py-2 text-sm bg-gray-700 hover:bg-gray-800 text-white rounded-md transition"
+        >
+          ✏️ Edit
+        </button>
 
-          {isSeller && (
-            <>
-              <button className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-1 rounded" onClick={() => onEdit(_id)}>✏️ Edit</button>
-              {/* <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1 rounded disabled:bg-gray-400 disabled:cursor-not-allowed" disabled={isSold} onClick={() => onMarkSold(_id)}>{isSold ? 'SOLD' : '🚚 Mark as Sold'}</button> */}
-              <button onClick={() => onMarkSold(_id)} disabled={loadingAction === 'sold' || isSold} className={`px-4 py-1 rounded text-white ${
-                isSold ? 'bg-gray-400 cursor-not-allowed' :
-                  loadingAction === 'sold' ? 'bg-yellow-300' : 'bg-yellow-600 hover:bg-yellow-700'
-                }`}>
-              {loadingAction === 'sold' ? 'Marking...' : isSold ? 'SOLD' : '🚚 Mark as Sold'}
-            </button>
-              {/* <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded" onClick={() => onDelete(_id)}>🗑 Delete</button> */}
-              <button
-                  onClick={() => onDelete(_id)}
-                  disabled={loadingAction === 'delete'}
-                  className={`bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded ${
-                    loadingAction === 'delete' ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
-                >
-                  {loadingAction === 'delete' ? 'Deleting...' : '🗑 Delete'}
-              </button>
-            </>
-          )}
+        <button
+          onClick={() => onMarkSold(_id)}
+          disabled={loadingAction === 'sold' || isSold}
+          className={`px-4 py-2 text-sm rounded-md font-medium transition ${
+            isSold
+              ? 'bg-gray-400 text-white cursor-not-allowed'
+              : 'bg-yellow-500 hover:bg-yellow-600 text-white'
+          }`}
+        >
+          {loadingAction === 'sold' ? 'Marking...' : isSold ? 'SOLD' : '🚚 Mark as Sold'}
+        </button>
 
-          {isBuyer && (
-            <>
-              <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1 rounded" onClick={() => onMessage(seller?._id,_id)}>💬 Message</button>
-              <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded" onClick={() => onOrder(_id)}>🛒 Order</button>
-            </>
-          )}
-        </div>
+        <button
+          onClick={() => onDelete(_id)}
+          disabled={loadingAction === 'delete'}
+          className={`px-4 py-2 text-sm rounded-md font-medium transition ${
+            loadingAction === 'delete'
+              ? 'bg-red-400 text-white cursor-not-allowed'
+              : 'bg-red-600 hover:bg-red-700 text-white'
+          }`}
+        >
+          {loadingAction === 'delete' ? 'Deleting...' : '🗑 Delete'}
+        </button>
+      </>
+    )}
 
-        {/* Status Badges */}
-        <div className="mt-4 flex flex-wrap gap-2">
-          <span className={`px-2 py-1 rounded text-sm ${isVerified ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-600'}`}>
-            {isVerified ? 'Verified' : 'Not Verified'}
-          </span>
-          <span className={`px-2 py-1 rounded text-sm ${isSold ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-200 text-gray-600'}`}>
-            {isSold ? 'Sold' : 'Not Sold'}
-          </span>
-          <span className={`px-2 py-1 rounded text-sm ${isApproved ? 'bg-blue-100 text-blue-800' : 'bg-gray-200 text-gray-600'}`}>
-            {isApproved ? 'Approved' : 'Not Approved'}
-          </span>
-        </div>
-      </div>
+    {isBuyer && (
+      <>
+        <button
+          className="px-4 py-2 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded-md transition"
+          onClick={() => onMessage(seller?._id, _id)}
+        >
+          💬 Message
+        </button>
+        <button
+          className="px-4 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-md transition"
+          onClick={() => onOrder(_id)}
+        >
+          🛒 Order
+        </button>
+      </>
+    )}
+  </div>
+
+  {/* Status Badges */}
+  <div className="mt-6 flex flex-wrap gap-3">
+    <span
+      className={`inline-flex items-center px-3 py-1 text-xs font-medium rounded-full ${
+        isVerified ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'
+      }`}
+    >
+      {isVerified ? '✔ Verified' : '✖ Not Verified'}
+    </span>
+
+    <span
+      className={`inline-flex items-center px-3 py-1 text-xs font-medium rounded-full ${
+        isSold ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-700'
+      }`}
+    >
+      {isSold ? 'SOLD' : 'Available'}
+    </span>
+
+    <span
+      className={`inline-flex items-center px-3 py-1 text-xs font-medium rounded-full ${
+        isApproved ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-700'
+      }`}
+    >
+      {isApproved ? '✅ Approved' : '⏳ Not Approved'}
+    </span>
+  </div>
+</div>
+
     </div>
     </div>
   );

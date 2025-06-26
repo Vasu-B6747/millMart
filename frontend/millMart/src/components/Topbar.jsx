@@ -65,7 +65,7 @@ export default function Topbar() {
   if(!userData) return false
 
   return (
-    <header className="bg-gray-700 shadow px-4 py-3 flex justify-between items-center">
+    <header className="bg-[#7703d3] shadow px-4 py-2 flex justify-between items-center">
       <div>
         <h1 className="text-xl font-bold text-white">Welcome to MillMart</h1>
         <h6 className="text-[10px] font-bold text-white">Buy/sell & Upgrade your Mill</h6>
@@ -75,14 +75,14 @@ export default function Topbar() {
         {/* Profile image with click event */}
         <img
           src={userData.profilePic}
-          className="mt-4 rounded-full w-12 h-12 cursor-pointer"
+          className=" rounded-full w-12 h-12 cursor-pointer"
           alt="user"
           onClick={toggleDropdown}
         />
 
         {/* Dropdown for user details */}
         {isDropdownOpen && (
-          <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg p-4 z-10">
+          <div className="absolute right-0 top-14 w-48 bg-white shadow-lg rounded-lg p-4 z-10">
             <div className="flex flex-col items-start">
               <p className="font-bold">{userData.name}</p>
               <p className="text-sm">{userData.email}</p>

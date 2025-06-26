@@ -15,9 +15,9 @@ export default function Millmart() {
       </div>
 
       {/* Content area: sidebar + main content horizontally */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex overflow-hidden">
         {/* Sidebar: fixed width */}
-        <div className="w-64 flex-shrink-0 overflow-y-auto bg-white border-r">
+        <div className="w-45 h-screen flex-shrink-0 overflow-y-auto bg-white border-r">
           <Sidebar />
         </div>
 

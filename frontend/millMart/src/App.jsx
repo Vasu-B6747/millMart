@@ -107,6 +107,7 @@ import LandPage from './components/LandPage';
 import RazorpayCheckout from './components/Payment';
 import ReviewForm from './components/Review';
 import Messages from './components/Messages';
+import Paymentpage from './components/Paymentpage';
 import { fetchAllpayments, userPayments } from './slices/paymentSlice';
 
 function App() {
@@ -118,7 +119,7 @@ function App() {
       dispatch(fetchUserAccount());
     }
     dispatch(fetchEquipments());
-    dispatch(userPayments())
+    // dispatch(fetchAllpayments())
   }, [dispatch]);
 useEffect(()=>{
 if(userData&&userData.role=='admin'){
@@ -144,7 +145,7 @@ if(userData&&userData.role=='admin'){
             <Route path="/account/userUpdate/:id" element={<UserUpdateForm />} />
             <Route path="/users/activate" element={<ActivateUser />} />
             <Route path="/mylist/equipment" element={<EquipmentForm />} />
-            <Route path="/equipments" element={<Equipments />} />
+            <Route path="/dashboard/equipments" element={<Equipments />} />
             <Route path="/equipments/equipmentcard/:id" element={<EquipmentCard />} />
             <Route path="/equipments/approve" element={<ApproveEquips />} />
             <Route path="/dashboard/mylist" element={<MyEquipments />} />
@@ -158,6 +159,7 @@ if(userData&&userData.role=='admin'){
             <Route path='/payment/:id' element={<RazorpayCheckout/>}/>
             <Route path='/review/:id' element={<ReviewForm/>}/>
             <Route path='/review' element={<ReviewForm/>}/>
+            <Route path='/transactions' element={<Paymentpage/>}/>
           </Route>
         )}
       </Routes>

@@ -2,6 +2,7 @@
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import Equip from "./DisplayEquip";
+import { Search,MapPin  } from 'lucide-react';
 const priceRanges = [
   { label: 'All Prices', min: 0, max: Infinity },
   { label: '₹10,000 - ₹50,000', min: 10000, max: 50000 },
@@ -54,16 +55,30 @@ export default function Home() {
   return (
     <div className="flex flex-col h-screen">
       {/* Top bar/header */}
-      <div className="bg-blue-700 text-white px-6 py-4 flex flex-col sm:flex-row justify-between items-center">
+      <div className=" text-white px-6 py-4 flex flex-col sm:flex-row justify-between items-center ">
        
-        <input className="w-full sm:w-80 px-4 py-2 rounded shadow text-black mb-2 sm:mb-0" type="text" value={location} onChange={e=>setLocation(e.target.value)} placeholder='Location'/>
-        <input
-          type="text"
-          value={search}
-          onChange={handleSearchChange}
-          placeholder="Search by name, type, or condition..."
-          className="w-full sm:w-80 px-4 py-2 rounded shadow text-black mb-2 sm:mb-0"
-        />
+        {/* <input className="w-full sm:w-80 px-4 py-2 rounded shadow text-black mb-2 sm:mb-0" type="text" value={location} onChange={e=>setLocation(e.target.value)} placeholder='Location'/> */}
+        <div className="flex items-center border rounded-md px-3 py-2 w-full max-w-md bg-white">
+      <MapPin className="w-4 h-4 text-gray-500 mr-2" />
+      <input
+        type="text"
+        value={location}
+        onChange={e=>setLocation(e.target.value)}
+        placeholder="location"
+        className="flex-1 outline-none bg-transparent text-gray-900"
+      />
+    </div>
+
+        <div className="flex items-center border rounded-md px-3 py-2 w-full max-w-md bg-white ">
+      <Search className="w-4 h-4 text-gray-500 mr-2" />
+      <input
+        type="text"
+        value={search}
+        onChange={handleSearchChange}
+        placeholder="Search by name, type, or condition..."
+        className="flex-1 outline-none bg-transparent text-gray-900"
+      />
+    </div>
         <select
           value={selectedRange.label}
           onChange={handleRangeChange}

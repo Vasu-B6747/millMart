@@ -28,7 +28,7 @@ export default function Equipments(){
   };
     return(
         
-         <div className="p-6">
+         <div className="p-6 bg-white  ">
          
          {/* {userData.role=='seller'&& <div><button onClick={()=>navigate('/dashboard/equipments/mylist')}>MyEquipments</button></div>}
       <h2 className="text-2xl font-semibold mb-4 text-indigo-700">List of Equipments</h2> */}
@@ -38,7 +38,7 @@ export default function Equipments(){
   </h2>
   {userData.role=='admin'&& <button className="bg-blue-500 text-white px-4 py-2 rounded"  onClick={()=>navigate('/equipments/approve')}>Approve/verify Equips</button>}
 </div>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto border border-gray-300 p-3 rounded-[10px] shadow">
         <table className="min-w-full table-auto border border-gray-300 text-sm">
           <thead>
             <tr className="bg-indigo-100 text-indigo-600">
@@ -110,8 +110,8 @@ export default function Equipments(){
                   </button>
                 </td>}
                 <td className="border px-4 py-2"> <button
-                    onClick={() => navigate(`/dashboard/equipments/equipmentcard/${ele._id}`)}
-                    className="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs"
+                    onClick={() => navigate(`/dashboard/equipmentcard/${ele._id}`)}
+                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-[16px]"
                   >
                     Info
                   </button></td>

@@ -48,7 +48,7 @@ const paymentSlice=createSlice({
             state.serverErr=null
         })
         builder.addCase(userPayments.fulfilled,(state,action)=>{
-            state.userPayment=action.payload
+            state.payments=action.payload
             state.loading=false
             state.serverErr=null
         })

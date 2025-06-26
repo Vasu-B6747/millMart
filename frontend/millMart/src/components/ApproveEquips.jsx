@@ -86,7 +86,7 @@ export default function ApproveEquips() {
   return (
     <div className="min-h-screen bg-gray-100 p-6 overflow-x-auto">
        <button
-  onClick={()=>navigate('/equipments')}
+  onClick={()=>navigate('/dashboard/equipments')}
   className="bg-red-500 hover:bg-red-700 text-white font-medium py-1 px-2 rounded flex items-center space-x-2 mb-8"
 >
   <span>&larr;</span>
