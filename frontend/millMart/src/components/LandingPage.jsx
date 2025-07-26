@@ -202,10 +202,10 @@ export default function LandingPage() {
         </div>
       )}
       <div>
-     <Gallerypage/>
+     {/* <Gallerypage/>
      <Contactpage/>
      <Footerpage/>
-     <Pricepage />
+     <Pricepage /> */}
     </div>  
       </div>
       
