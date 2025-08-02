@@ -7,5 +7,5 @@ export default defineConfig({
   build: {
     outDir: 'dist', // or 'build' if that's what you prefer
   },
-  base: './', // VERY IMPORTANT to avoid MIME errors
+  base: '', // VERY IMPORTANT to avoid MIME errors
 })
