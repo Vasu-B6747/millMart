@@ -103,7 +103,7 @@ import Chat from './components/Chat';
 import EquipmentSearch from './components/Search';
 import NearbyEquipmentSearch from './components/Nearby';
 import Home from './components/Home';
-import LandPage from './components/LandPage';
+// import LandPage from './components/LandPage';
 import RazorpayCheckout from './components/Payment';
 import ReviewForm from './components/Review';
 import Messages from './components/Messages';

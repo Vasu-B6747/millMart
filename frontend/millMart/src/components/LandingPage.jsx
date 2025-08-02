@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import Gallerypage from './pages/Gallerypage';
-import Contactpage from './pages/Contactpage'
-import Footerpage from './pages/Footerpage';
-import Pricepage from './pages/Pricepage'
-import Heropage from './pages/Heropage'
+// import Gallerypage from './pages/Gallerypage';
+// import Contactpage from './pages/Contactpage'
+// import Footerpage from './pages/Footerpage';
+// import Pricepage from './pages/Pricepage'
+// import Heropage from './pages/Heropage'
 import 'swiper/css';
 import 'swiper/css/pagination';
 
