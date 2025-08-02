@@ -21,7 +21,7 @@
 //         </section>
 //     )
 // }
-// import {heroImage} from 'src/assets/pulse-processing-500x500.webp'; // Adjust path as needed
+// import heroImage from 'src/assets/pulse-processing-500x500.webp'; // Adjust path as needed
 
 export default function Heropage() {
   return (
@@ -48,7 +48,7 @@ export default function Heropage() {
           </div>
         </div>
         <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6">
-          <img className="object-cover object-center rounded" alt="hero" src="src/assets/pulse-processing-500x500.webp" />
+          <img className="object-cover object-center rounded" alt="hero" src='src/assets/pulse-processing-500x500.webp'  />  
         </div>
       </div>
     </section>
